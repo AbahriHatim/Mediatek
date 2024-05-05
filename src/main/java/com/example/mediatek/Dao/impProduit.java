@@ -77,38 +77,39 @@ public class impProduit implements iProduit{
         }
 
 
-        @Override
-        public void edite(Produit produit) {
-            Connection connection = null;
-            PreparedStatement statement = null;
+    public void edite(Produit produit) {
+        Connection connection = null;
+        PreparedStatement statement = null;
 
+        try {
+            connection = DataBaseConnection.getConnection();
+            String sql = "UPDATE produits SET nom=?, description=?, prix_unitaire=?, quantite_en_stock=? WHERE produit_id=?";
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, produit.getNom());
+            statement.setString(2, produit.getDescription());
+            statement.setDouble(3, produit.getPrix_unitaire());
+            statement.setInt(4, produit.getQuantite_en_stock());
+            statement.setInt(5, produit.getProduit_id());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
             try {
-                connection = DataBaseConnection.getConnection();
-                String sql = "UPDATE produits SET nom=?, description=?, prix_unitaire=?, telephone=? WHERE produit_id=?";
-                statement = connection.prepareStatement(sql);
-                statement.setString(1, produit.getNom());
-                statement.setString(2, produit.getDescription());
-                statement.setDouble(3, produit.getPrix_unitaire());
-                statement.setInt(4, produit.getQuantite_en_stock());
-                statement.executeUpdate();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    if (statement != null) statement.close();
-                    if (connection != null) connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
             }
         }
+    }
+
 
     @Override
     public void supprimer(int produitId) {
-        try {
-            // Check if the connection is not null
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {connection = DataBaseConnection.getConnection();
             if (connection != null) {
-                // Use the connection to prepare and execute SQL statements
                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM produits WHERE produit_id=?");
                 preparedStatement.setInt(1, produitId);
                 preparedStatement.executeUpdate();

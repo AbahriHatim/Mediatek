@@ -110,20 +110,25 @@ public class ProduitController {
     }
 
 
-    // Method to delete an existing client
     @FXML
     protected void onDeleteClientButtonClick() {
-        // Assuming you have a selected client somehow, let's call it selectedClient
-        // Here you would call the DAO method to delete it from the database
-        // clientDao.supprimer(selectedClient);
+        // Get the selected client from the TableView
         Produit selectedClient = clientTableView.getSelectionModel().getSelectedItem();
-        // Assuming you have access to the client's ID
-        int productdToDelete = selectedClient.getProduit_id(); // Assuming client_id is the correct attribute
 
-        // Call the DAO method to delete the client
-        produitDao.supprimer(productdToDelete);
+        // Check if a client is selected
+        if (selectedClient != null) {
+            int productdToDelete = selectedClient.getProduit_id();
 
-        onLoadClientsButtonClick(); // Reload client data after deleting
+            // Call the DAO method to delete the client from the database
+            produitDao.supprimer(productdToDelete);
+
+            // Reload client data after deleting
+            onLoadClientsButtonClick();
+        } else {
+            // If no client is selected, display an error message or handle it accordingly
+            System.out.println("No client selected for deletion.");
+        }
     }
+
 
 }
