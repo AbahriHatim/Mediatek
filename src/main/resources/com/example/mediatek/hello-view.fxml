@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<VBox alignment="CENTER" spacing="10.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Contoller.ClientController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <Label fx:id="welcomeText"/>
+    <TableView fx:id="clientTableView">
+        <columns>
+            <TableColumn text="ID" fx:id="idColumn"/>
+            <TableColumn text="Name" fx:id="nameColumn"/>
+            <TableColumn text="Address" fx:id="addressColumn"/>
+            <TableColumn text="Email" fx:id="emailColumn"/>
+            <TableColumn text="Telephone" fx:id="telephoneColumn"/>
+        </columns>
+    </TableView>
+
+
+    <!-- Button to load clients -->
+    <Button text="Load Clients" onAction="#onLoadClientsButtonClick"/>
+
+    <!-- Add Client section -->
+    <VBox spacing="5.0">
+        <Label text="Add New Client"/>
+        <TextField fx:id="nameField" promptText="Name"/>
+        <TextField fx:id="addressField" promptText="Address"/>
+        <TextField fx:id="emailField" promptText="Email"/>
+        <TextField fx:id="telephoneField" promptText="Telephone"/>
+        <Button text="Add Client" onAction="#onAddClientButtonClick"/>
+    </VBox>
+
+    <!-- Button to edit a client -->
+    <Button text="Edit Client" onAction="#onEditClientButtonClick"/>
+
+    <!-- Button to delete a client -->
+    <Button text="Delete Client" onAction="#onDeleteClientButtonClick"/>
+</VBox>
