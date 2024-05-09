@@ -23,7 +23,7 @@ public class impProduit implements iProduit{
 
             try {
                 connection = DataBaseConnection.getConnection();
-                String sql = "SELECT * FROM produits";
+                String sql = "SELECT * FROM PRODUITS";
                 statement = connection.prepareStatement(sql);
                 resultSet = statement.executeQuery();
 
@@ -57,12 +57,21 @@ public class impProduit implements iProduit{
 
             try {
                 connection = DataBaseConnection.getConnection();
-                String sql = "INSERT INTO produits (nom, description, prix_unitaire, quantite_en_stock) VALUES (?, ?, ?, ?)";
+                PreparedStatement seqStmt = connection.prepareStatement("SELECT PRODUIT_SEQ.NEXTVAL FROM DUAL");
+                ResultSet rs = seqStmt.executeQuery();
+
+                int nextId = 0; // Initialiser à 0
+
+                if (rs.next()) {
+                    nextId = rs.getInt(1); // Obtenir la valeur de la séquence
+                }
+                String sql = "INSERT INTO PRODUITS (produit_id,nom, description, prix_unitaire, quantite_en_stock) VALUES (?, ?, ?, ?, ?)";
                 statement = connection.prepareStatement(sql);
-                statement.setString(1, produit.getNom());
-                statement.setString(2, produit.getDescription());
-                statement.setDouble(3, produit.getPrix_unitaire());
-                statement.setInt(4, produit.getQuantite_en_stock());
+                statement.setInt(1, nextId);
+                statement.setString(2, produit.getNom());
+                statement.setString(3, produit.getDescription());
+                statement.setDouble(4, produit.getPrix_unitaire());
+                statement.setInt(5, produit.getQuantite_en_stock());
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -83,7 +92,7 @@ public class impProduit implements iProduit{
 
         try {
             connection = DataBaseConnection.getConnection();
-            String sql = "UPDATE produits SET nom=?, description=?, prix_unitaire=?, quantite_en_stock=? WHERE produit_id=?";
+            String sql = "UPDATE PRODUITS SET nom=?, description=?, prix_unitaire=?, quantite_en_stock=? WHERE produit_id=?";
             statement = connection.prepareStatement(sql);
             statement.setString(1, produit.getNom());
             statement.setString(2, produit.getDescription());
@@ -110,7 +119,7 @@ public class impProduit implements iProduit{
         PreparedStatement statement = null;
         try {connection = DataBaseConnection.getConnection();
             if (connection != null) {
-                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM produits WHERE produit_id=?");
+                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM PRODUITS WHERE produit_id=?");
                 preparedStatement.setInt(1, produitId);
                 preparedStatement.executeUpdate();
             } else {

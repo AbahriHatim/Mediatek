@@ -1,0 +1,59 @@
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.mediatek.Contoller.FactureContoller"
+
+            prefHeight="400.0" prefWidth="600.0">
+
+    <TableView fx:id="produitTableView" prefWidth="300" layoutX="20" layoutY="20">
+        <columns>
+            <TableColumn text="ID" fx:id="idProduitColumn"/>
+            <TableColumn text="Name" fx:id="nameProduitColumn"/>
+            <TableColumn text="Description" fx:id="descriptionColumn"/>
+            <TableColumn text="Prix Unitaire" fx:id="prixUnitaireColumn"/>
+            <TableColumn text="Quantite en Stock" fx:id="quantiteEnStockColumn"/>
+        </columns>
+    </TableView>
+
+    <TableView fx:id="clientTableView" prefWidth="300" layoutX="320" layoutY="20">
+        <columns>
+            <TableColumn text="ID" fx:id="idClientColumn"/>
+            <TableColumn text="Name" fx:id="nameClientColumn"/>
+            <TableColumn text="Address" fx:id="addressColumn"/>
+            <TableColumn text="Email" fx:id="emailColumn"/>
+            <TableColumn text="Telephone" fx:id="telephoneColumn"/>
+        </columns>
+    </TableView>
+    <TableView fx:id="factureTableView" prefWidth="300" layoutX="620" layoutY="20">
+        <columns>
+            <TableColumn text="ID" fx:id="idFactureColumn"/>
+            <TableColumn text="client id" fx:id="ClientIdColumn"/>
+            <TableColumn text="fac date" fx:id="dateFactureColumn"/>
+        </columns>
+    </TableView>
+
+    <VBox spacing="5.0" layoutX="320" layoutY="340">
+        <Label text="Ajouter une facture"/>
+        <TextField fx:id="FactureidField" promptText="Facture id"/>
+        <TextField fx:id="nameProduitField" promptText="Name Produit"/>
+        <TextField fx:id="quantiteField" promptText="Quantite"/>
+    </VBox>
+    <VBox spacing="5.0" layoutX="320" layoutY="640">
+        <Label text="Ajouter une facture"/>
+        <TextField fx:id="nameClientField" promptText="Name Client" />
+    </VBox>
+
+
+
+
+    <Button text="Add Produit" onAction="#onAddProduitButtonClick"
+            layoutX="20" layoutY="340"/>
+    <Button text="Add Facture" onAction="#onAddFactureButtonClick"
+            layoutX="20" layoutY="640"/>
+</AnchorPane>

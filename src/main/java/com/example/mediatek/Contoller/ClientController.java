@@ -52,6 +52,19 @@ public class ClientController {
 
         // Populate table
         clientTableView.setItems(FXCollections.observableArrayList(clientDao.lister()));
+        ObservableList<Client> produitList = FXCollections.observableArrayList(clientDao.lister());
+        clientTableView.setItems(produitList);
+
+        // Handle selection change
+        clientTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                // Populate text fields with selected Produit object's data
+                nameField.setText(newSelection.getNom());
+                addressField.setText(newSelection.getAdresse());
+                emailField.setText(String.valueOf(newSelection.getEmail()));
+                telephoneField.setText(String.valueOf(newSelection.getTelephone()));
+            }
+        });
     }
 
 
@@ -113,17 +126,13 @@ public class ClientController {
     // Method to delete an existing client
     @FXML
     protected void onDeleteClientButtonClick() {
-        // Assuming you have a selected client somehow, let's call it selectedClient
-        // Here you would call the DAO method to delete it from the database
-        // clientDao.supprimer(selectedClient);
-        Client selectedClient = clientTableView.getSelectionModel().getSelectedItem();
-        // Assuming you have access to the client's ID
-        int clientIdToDelete = selectedClient.getClient_id(); // Assuming client_id is the correct attribute
 
-        // Call the DAO method to delete the client
+        Client selectedClient = clientTableView.getSelectionModel().getSelectedItem();
+        int clientIdToDelete = selectedClient.getClient_id();
+
         clientDao.supprimer(clientIdToDelete);
 
-        onLoadClientsButtonClick(); // Reload client data after deleting
+        onLoadClientsButtonClick();
     }
 
 }

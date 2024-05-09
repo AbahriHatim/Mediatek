@@ -11,6 +11,7 @@ public class ProduitFacture {
         this.quantite = quantite;
     }
 
+
     public int getFacture_id() {
         return facture_id;
     }

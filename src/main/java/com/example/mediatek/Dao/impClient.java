@@ -23,7 +23,7 @@ public class impClient implements iClient {
             if (connection != null) {
                 // Use the connection to execute SQL query to fetch clients
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT * FROM clients");
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM CLIENTS");
 
                 // Iterate through the result set and create Client objects
                 while (resultSet.next()) {
@@ -48,12 +48,25 @@ public class impClient implements iClient {
         try {
             // Check if the connection is not null
             if (connection != null) {
-                // Use the connection to prepare and execute SQL statements
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO clients (nom, adresse, email, telephone) VALUES (?, ?, ?, ?)");
-                preparedStatement.setString(1, client.getNom());
-                preparedStatement.setString(2, client.getAdresse());
-                preparedStatement.setString(3, client.getEmail());
-                preparedStatement.setString(4, client.getTelephone());
+                PreparedStatement seqStmt = connection.prepareStatement("SELECT CLIENT_SEQ.NEXTVAL FROM DUAL");
+                ResultSet rs = seqStmt.executeQuery();
+
+                int nextId = 0; // Initialiser à 0
+
+                if (rs.next()) {
+                    nextId = rs.getInt(1); // Obtenir la valeur de la séquence
+                }
+
+                // Insérer un nouveau client avec l'identifiant obtenu
+                String insertQuery = "INSERT INTO CLIENTS (CLIENT_ID, NOM, ADRESSE, EMAIL, TELEPHONE) VALUES (?, ?, ?, ?, ?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
+
+                preparedStatement.setInt(1, nextId); // Utiliser l'identifiant généré par la séquence
+                preparedStatement.setString(2, client.getNom());
+                preparedStatement.setString(3, client.getAdresse());
+                preparedStatement.setString(4, client.getEmail());
+                preparedStatement.setString(5, client.getTelephone());
+
                 preparedStatement.executeUpdate();
             } else {
                 System.out.println("Database connection is null.");
@@ -69,7 +82,7 @@ public class impClient implements iClient {
             // Check if the connection is not null
             if (connection != null) {
                 // Use the connection to prepare and execute SQL statements
-                PreparedStatement preparedStatement = connection.prepareStatement("UPDATE clients SET nom=?, adresse=?, email=?, telephone=? WHERE client_id=?");
+                PreparedStatement preparedStatement = connection.prepareStatement("UPDATE CLIENTS SET nom=?, adresse=?, email=?, telephone=? WHERE client_id=?");
                 preparedStatement.setInt(5, client.getClient_id());
 
                 preparedStatement.setString(1, client.getNom());
@@ -91,7 +104,7 @@ public class impClient implements iClient {
             // Check if the connection is not null
             if (connection != null) {
                 // Use the connection to prepare and execute SQL statements
-                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM clients WHERE client_id=?");
+                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM CLIENTS WHERE client_id=?");
                 preparedStatement.setInt(1, clientId);
                 preparedStatement.executeUpdate();
             } else {
