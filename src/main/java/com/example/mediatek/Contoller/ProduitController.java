@@ -52,9 +52,19 @@ public class ProduitController {
         prix_unitaireColumn.setCellValueFactory(new PropertyValueFactory<>("prix_unitaire"));
         quantite_en_stockColumn.setCellValueFactory(new PropertyValueFactory<>("quantite_en_stock"));
 
-        // Populate table
-        clientTableView.setItems(FXCollections.observableArrayList(produitDao.lister()));
+        ObservableList<Produit> produitList = FXCollections.observableArrayList(produitDao.lister());
+        clientTableView.setItems(produitList);
+
+        clientTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                nameField.setText(newSelection.getNom());
+                descriptionField.setText(newSelection.getDescription());
+                prix_unitaireField.setText(String.valueOf(newSelection.getPrix_unitaire()));
+                quantite_en_stockField.setText(String.valueOf(newSelection.getQuantite_en_stock()));
+            }
+        });
     }
+
 
 
     // Method to add a new client

@@ -23,7 +23,7 @@ public class impProduit implements iProduit{
 
             try {
                 connection = DataBaseConnection.getConnection();
-                String sql = "SELECT * FROM produits";
+                String sql = "SELECT * FROM PRODUITS";
                 statement = connection.prepareStatement(sql);
                 resultSet = statement.executeQuery();
 
@@ -57,7 +57,7 @@ public class impProduit implements iProduit{
 
             try {
                 connection = DataBaseConnection.getConnection();
-                String sql = "INSERT INTO produits (nom, description, prix_unitaire, quantite_en_stock) VALUES (?, ?, ?, ?)";
+                String sql = "INSERT INTO PRODUITS (nom, description, prix_unitaire, quantite_en_stock) VALUES (?, ?, ?, ?)";
                 statement = connection.prepareStatement(sql);
                 statement.setString(1, produit.getNom());
                 statement.setString(2, produit.getDescription());
@@ -83,7 +83,7 @@ public class impProduit implements iProduit{
 
         try {
             connection = DataBaseConnection.getConnection();
-            String sql = "UPDATE produits SET nom=?, description=?, prix_unitaire=?, quantite_en_stock=? WHERE produit_id=?";
+            String sql = "UPDATE PRODUITS SET nom=?, description=?, prix_unitaire=?, quantite_en_stock=? WHERE produit_id=?";
             statement = connection.prepareStatement(sql);
             statement.setString(1, produit.getNom());
             statement.setString(2, produit.getDescription());
@@ -110,7 +110,7 @@ public class impProduit implements iProduit{
         PreparedStatement statement = null;
         try {connection = DataBaseConnection.getConnection();
             if (connection != null) {
-                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM produits WHERE produit_id=?");
+                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM PRODUITS WHERE produit_id=?");
                 preparedStatement.setInt(1, produitId);
                 preparedStatement.executeUpdate();
             } else {

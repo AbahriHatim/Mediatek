@@ -23,7 +23,7 @@ public class impClient implements iClient {
             if (connection != null) {
                 // Use the connection to execute SQL query to fetch clients
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT * FROM clients");
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM CLIENTS");
 
                 // Iterate through the result set and create Client objects
                 while (resultSet.next()) {
@@ -49,7 +49,7 @@ public class impClient implements iClient {
             // Check if the connection is not null
             if (connection != null) {
                 // Use the connection to prepare and execute SQL statements
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO clients (nom, adresse, email, telephone) VALUES (?, ?, ?, ?)");
+                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO CLIENTS (nom, adresse, email, telephone) VALUES (?, ?, ?, ?)");
                 preparedStatement.setString(1, client.getNom());
                 preparedStatement.setString(2, client.getAdresse());
                 preparedStatement.setString(3, client.getEmail());
@@ -69,7 +69,7 @@ public class impClient implements iClient {
             // Check if the connection is not null
             if (connection != null) {
                 // Use the connection to prepare and execute SQL statements
-                PreparedStatement preparedStatement = connection.prepareStatement("UPDATE clients SET nom=?, adresse=?, email=?, telephone=? WHERE client_id=?");
+                PreparedStatement preparedStatement = connection.prepareStatement("UPDATE CLIENTS SET nom=?, adresse=?, email=?, telephone=? WHERE client_id=?");
                 preparedStatement.setInt(5, client.getClient_id());
 
                 preparedStatement.setString(1, client.getNom());
@@ -91,7 +91,7 @@ public class impClient implements iClient {
             // Check if the connection is not null
             if (connection != null) {
                 // Use the connection to prepare and execute SQL statements
-                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM clients WHERE client_id=?");
+                PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM CLIENTS WHERE client_id=?");
                 preparedStatement.setInt(1, clientId);
                 preparedStatement.executeUpdate();
             } else {

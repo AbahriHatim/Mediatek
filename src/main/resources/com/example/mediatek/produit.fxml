@@ -26,22 +26,18 @@
 
 
 
-    <!-- Button to load clients -->
-    <Button text="Load Clients" onAction="#onLoadClientsButtonClick"/>
+    <Button text="Load Produit" onAction="#onLoadClientsButtonClick"/>
 
-    <!-- Add Client section -->
     <VBox spacing="5.0">
-        <Label text="Add New Client"/>
-        <TextField fx:id="nameField" promptText="Name"/>
+        <Label text="Add New Produit"/>
+        <TextField fx:id="nameField" promptText="Name" />
         <TextField fx:id="descriptionField" promptText="Description"/>
         <TextField fx:id="prix_unitaireField" promptText="Prix unitaire"/>
         <TextField fx:id="quantite_en_stockField" promptText="Quantite en Stocke"/>
         <Button text="Add Client" onAction="#onAddClientButtonClick"/>
     </VBox>
 
-    <!-- Button to edit a client -->
-    <Button text="Edit Client" onAction="#onEditClientButtonClick"/>
+    <Button text="Edit Produit" onAction="#onEditClientButtonClick"/>
 
-    <!-- Button to delete a client -->
-    <Button text="Delete Client" onAction="#onDeleteClientButtonClick"/>
+    <Button text="Delete Produit" onAction="#onDeleteClientButtonClick"/>
 </VBox>
