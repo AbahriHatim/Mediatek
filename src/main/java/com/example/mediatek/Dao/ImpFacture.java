@@ -82,7 +82,7 @@ public class ImpFacture {
             if (connection != null) {
                 // Use the connection to execute SQL query to fetch produits
                 Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT * FROM PRODUITS");
+                ResultSet resultSet = statement.executeQuery("SELECT * FROM PRODUITS where quantite_en_stock>0");
 
                 // Iterate through the result set and create Produit objects
                 while (resultSet.next()) {
@@ -201,6 +201,29 @@ public int createFacture(int clientId, Date invoiceDate) throws SQLException {
                 itemStatement.close();
             }
         }
+    }
+    public boolean checkProduitExistsInFacture(int factureId, int produitId) throws SQLException {
+        boolean exists = false;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            String sql = "SELECT COUNT(*) FROM Produits_Facture WHERE FACTURE_ID = ? AND produit_id = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, factureId);
+            statement.setInt(2, produitId);
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                exists = (count > 0);
+            }
+        } finally {
+            if (resultSet != null) resultSet.close();
+            if (statement != null) statement.close();
+        }
+
+        return exists;
     }
 
 

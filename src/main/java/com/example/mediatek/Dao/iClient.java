@@ -5,9 +5,9 @@ import com.example.mediatek.Client;
 import java.util.List;
 
 public interface iClient {
-    List<Client> lister();
-    void ajouter(Client client);
-    void edite(Client client);
-    void supprimer(int clientid);
+    List<Client> lister() throws DAOException;
+    void ajouter(Client client) throws DAOException;
+    void edite(Client client) throws DAOException;
+    void supprimer(int clientId) throws DAOException;
 
 }

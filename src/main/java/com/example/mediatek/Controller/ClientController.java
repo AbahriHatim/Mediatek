@@ -1,6 +1,7 @@
-package com.example.mediatek.Contoller;
+package com.example.mediatek.Controller;
 
 import com.example.mediatek.Client;
+import com.example.mediatek.Dao.DAOException;
 import com.example.mediatek.Dao.impClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,35 +12,34 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.util.List;
-import java.util.Properties;
-
 public class ClientController {
     @FXML
     private Label welcomeText;
 
     private impClient clientDao = new impClient(); // Instantiate your DAO
 
-
-
     @FXML
     private TableView<Client> clientTableView;
-
-
 
     @FXML
     private TableColumn<Client, String> nameColumn;
     @FXML
     private TableColumn<Client, Integer> idColumn;
-
     @FXML
     private TableColumn<Client, String> addressColumn;
-
     @FXML
     private TableColumn<Client, String> emailColumn;
-
     @FXML
     private TableColumn<Client, String> telephoneColumn;
+
+    @FXML
+    private TextField nameField;
+    @FXML
+    private TextField addressField;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private TextField telephoneField;
 
     @FXML
     protected void onLoadClientsButtonClick() {
@@ -50,40 +50,28 @@ public class ClientController {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         telephoneColumn.setCellValueFactory(new PropertyValueFactory<>("telephone"));
 
-        // Populate table
-        clientTableView.setItems(FXCollections.observableArrayList(clientDao.lister()));
-        ObservableList<Client> produitList = FXCollections.observableArrayList(clientDao.lister());
-        clientTableView.setItems(produitList);
+        try {
+            // Populate table
+            ObservableList<Client> clientList = FXCollections.observableArrayList(clientDao.lister());
+            clientTableView.setItems(clientList);
 
-        // Handle selection change
-        clientTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                // Populate text fields with selected Produit object's data
-                nameField.setText(newSelection.getNom());
-                addressField.setText(newSelection.getAdresse());
-                emailField.setText(String.valueOf(newSelection.getEmail()));
-                telephoneField.setText(String.valueOf(newSelection.getTelephone()));
-            }
-        });
+            // Handle selection change
+            clientTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+                if (newSelection != null) {
+                    // Populate text fields with selected Client object's data
+                    nameField.setText(newSelection.getNom());
+                    addressField.setText(newSelection.getAdresse());
+                    emailField.setText(String.valueOf(newSelection.getEmail()));
+                    telephoneField.setText(String.valueOf(newSelection.getTelephone()));
+                }
+            });
+        } catch (DAOException e) {
+            // Handle DAOException (e.g., log the error, show an alert to the user)
+            e.printStackTrace();
+        }
     }
 
-
-    // Method to add a new client
     @FXML
-    private TextField nameField;
-
-    @FXML
-    private TextField addressField;
-
-    @FXML
-    private TextField emailField;
-
-    @FXML
-    private TextField telephoneField;
-
-
-    @FXML
-
     protected void onAddClientButtonClick() {
         String name = nameField.getText();
         String address = addressField.getText();
@@ -92,13 +80,15 @@ public class ClientController {
 
         Client newClient = new Client(0, name, address, email, telephone);
 
-        clientDao.ajouter(newClient);
-
-        onLoadClientsButtonClick();
+        try {
+            clientDao.ajouter(newClient);
+            onLoadClientsButtonClick();
+        } catch (DAOException e) {
+            // Handle DAOException (e.g., log the error, show an alert to the user)
+            e.printStackTrace();
+        }
     }
 
-
-    // Method to edit an existing client
     @FXML
     protected void onEditClientButtonClick() {
         // Get the selected client from the TableView
@@ -112,27 +102,36 @@ public class ClientController {
             selectedClient.setEmail(emailField.getText());
             selectedClient.setTelephone(telephoneField.getText());
 
-            // Call the DAO method to update the client in the database
-            clientDao.edite(selectedClient);
-
-            // Reload client data after editing
-            onLoadClientsButtonClick();
+            try {
+                clientDao.edite(selectedClient);
+                onLoadClientsButtonClick();
+            } catch (DAOException e) {
+                // Handle DAOException (e.g., log the error, show an alert to the user)
+                e.printStackTrace();
+            }
         } else {
             // Display an error message or handle the case where no client is selected
+            System.out.println("No client selected for editing.");
         }
     }
 
-
-    // Method to delete an existing client
     @FXML
     protected void onDeleteClientButtonClick() {
-
         Client selectedClient = clientTableView.getSelectionModel().getSelectedItem();
-        int clientIdToDelete = selectedClient.getClient_id();
 
-        clientDao.supprimer(clientIdToDelete);
+        if (selectedClient != null) {
+            int clientIdToDelete = selectedClient.getClient_id();
 
-        onLoadClientsButtonClick();
+            try {
+                clientDao.supprimer(clientIdToDelete);
+                onLoadClientsButtonClick();
+            } catch (DAOException e) {
+                // Handle DAOException (e.g., log the error, show an alert to the user)
+                e.printStackTrace();
+            }
+        } else {
+            // Display an error message or handle the case where no client is selected
+            System.out.println("No client selected for deletion.");
+        }
     }
-
 }

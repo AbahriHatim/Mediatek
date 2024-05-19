@@ -1,4 +1,4 @@
-package com.example.mediatek.Contoller;
+package com.example.mediatek.Controller;
 
 import com.example.mediatek.Facture;
 import com.example.mediatek.ProduitFacture;
@@ -13,10 +13,9 @@ import com.example.mediatek.Dao.ImpFacture;
 import com.example.mediatek.Produit;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import javafx.scene.control.Alert;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static java.lang.Integer.parseInt;
 
@@ -174,6 +173,8 @@ protected void onAddFactureButtonClick() {
         // Gérer l'exception
     }
 }
+
+
     @FXML
     protected void onAddProduitButtonClick() {
         // Récupération des données saisies
@@ -186,15 +187,37 @@ protected void onAddFactureButtonClick() {
 
         try {
             // Ajout du produit facturé à la table Produits_Facture
-            factureDao.addProduitsFacture(factureId, produit.getProduit_id(), quantite);
-            onLoadClientsButtonClickClient();
-            onLoadProduitsButtonClick();
-            onLoadFacturesButtonClick();
+            if (produit != null) {
+                if (quantite <= produit.getQuantite_en_stock()) {
+                    boolean produitExistsInFacture = factureDao.checkProduitExistsInFacture(factureId, produit.getProduit_id());
+                    if (!produitExistsInFacture) {
+                        factureDao.addProduitsFacture(factureId, produit.getProduit_id(), quantite);
+                        onLoadClientsButtonClickClient();
+                        onLoadProduitsButtonClick();
+                        onLoadFacturesButtonClick();
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "Product Already Exists", "Product with ID " + produit.getProduit_id() + " already exists in facture " + factureId);
+                    }
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Quantity Exceeded", "Quantity selected is greater than the quantity in stock for product " + produit.getNom());
+                }
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Product Not Found", "Product with name " + produitName + " does not exist.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-
+            showAlert(Alert.AlertType.ERROR, "SQL Error", e.getMessage());
         }
     }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 
 
 

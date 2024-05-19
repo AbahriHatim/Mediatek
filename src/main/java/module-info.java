@@ -10,9 +10,11 @@ module com.example.mediatek {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires java.sql;
+    requires org.apache.pdfbox;
+
 
     opens com.example.mediatek to javafx.fxml;
     exports com.example.mediatek;
-    exports com.example.mediatek.Contoller;
-    opens com.example.mediatek.Contoller to javafx.fxml;
+    exports com.example.mediatek.Controller;
+    opens com.example.mediatek.Controller to javafx.fxml;
 }

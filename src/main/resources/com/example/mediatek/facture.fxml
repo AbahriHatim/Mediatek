@@ -7,7 +7,7 @@
 <?import javafx.scene.control.TextField?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.mediatek.Contoller.FactureContoller"
+            fx:controller="com.example.mediatek.Controller.FactureContoller"
 
             prefHeight="400.0" prefWidth="600.0">
 

@@ -1,4 +1,4 @@
-package com.example.mediatek.Contoller;
+package com.example.mediatek.Controller;
 
 
 import javafx.fxml.FXML;

@@ -1,20 +1,15 @@
-package com.example.mediatek.Contoller;
+package com.example.mediatek.Controller;
 
-import com.example.mediatek.Client;
-import com.example.mediatek.Dao.impClient;
+import com.example.mediatek.Dao.DAOException;
 import com.example.mediatek.Dao.impProduit;
 import com.example.mediatek.Produit;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.List;
-import java.util.Properties;
 
 public class ProduitController {
     @FXML
@@ -22,26 +17,28 @@ public class ProduitController {
 
     private impProduit produitDao = new impProduit(); // Instantiate your DAO
 
-
-
     @FXML
     private TableView<Produit> clientTableView;
-
-
 
     @FXML
     private TableColumn<Produit, String> nameColumn;
     @FXML
     private TableColumn<Produit, Integer> idColumn;
-
     @FXML
     private TableColumn<Produit, String> descriptionColumn;
-
     @FXML
     private TableColumn<Produit, Double> prix_unitaireColumn;
-
     @FXML
     private TableColumn<Produit, Integer> quantite_en_stockColumn;
+
+    @FXML
+    private TextField nameField;
+    @FXML
+    private TextField descriptionField;
+    @FXML
+    private TextField prix_unitaireField;
+    @FXML
+    private TextField quantite_en_stockField;
 
     @FXML
     protected void onLoadClientsButtonClick() {
@@ -52,8 +49,12 @@ public class ProduitController {
         prix_unitaireColumn.setCellValueFactory(new PropertyValueFactory<>("prix_unitaire"));
         quantite_en_stockColumn.setCellValueFactory(new PropertyValueFactory<>("quantite_en_stock"));
 
-        ObservableList<Produit> produitList = FXCollections.observableArrayList(produitDao.lister());
-        clientTableView.setItems(produitList);
+        try {
+            ObservableList<Produit> produitList = FXCollections.observableArrayList(produitDao.lister());
+            clientTableView.setItems(produitList);
+        } catch (DAOException e) {
+            showAlert("Error", "Unable to load products: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
 
         clientTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -65,24 +66,7 @@ public class ProduitController {
         });
     }
 
-
-
-    // Method to add a new client
     @FXML
-    private TextField nameField;
-
-    @FXML
-    private TextField descriptionField;
-
-    @FXML
-    private TextField prix_unitaireField;
-
-    @FXML
-    private TextField quantite_en_stockField;
-
-
-    @FXML
-
     protected void onAddClientButtonClick() {
         String name = nameField.getText();
         String description = descriptionField.getText();
@@ -91,13 +75,14 @@ public class ProduitController {
 
         Produit newProduit = new Produit(0, name, description, prix_unitaire, quantite_en_stock);
 
-        produitDao.ajouter(newProduit);
-
-        onLoadClientsButtonClick();
+        try {
+            produitDao.ajouter(newProduit);
+            onLoadClientsButtonClick();
+        } catch (DAOException e) {
+            showAlert("Error", "Unable to add product: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
-
-    // Method to edit an existing client
     @FXML
     protected void onEditClientButtonClick() {
         // Get the selected client from the TableView
@@ -111,14 +96,18 @@ public class ProduitController {
             selectedClient.setPrix_unitaire(Double.parseDouble(prix_unitaireField.getText()));
             selectedClient.setQuantite_en_stock(Integer.parseInt(quantite_en_stockField.getText()));
 
-            // Call the DAO method to update the client in the database
-            produitDao.edite(selectedClient);
-
-            // Reload client data after editing
-            onLoadClientsButtonClick();
+            try {
+                // Call the DAO method to update the client in the database
+                produitDao.edite(selectedClient);
+                // Reload client data after editing
+                onLoadClientsButtonClick();
+            } catch (DAOException e) {
+                showAlert("Error", "Unable to edit product: " + e.getMessage(), Alert.AlertType.ERROR);
+            }
+        } else {
+            showAlert("Warning", "No product selected for editing.", Alert.AlertType.WARNING);
         }
     }
-
 
     @FXML
     protected void onDeleteClientButtonClick() {
@@ -127,18 +116,25 @@ public class ProduitController {
 
         // Check if a client is selected
         if (selectedClient != null) {
-            int productdToDelete = selectedClient.getProduit_id();
+            int productIdToDelete = selectedClient.getProduit_id();
 
-            // Call the DAO method to delete the client from the database
-            produitDao.supprimer(productdToDelete);
-
-            // Reload client data after deleting
-            onLoadClientsButtonClick();
+            try {
+                // Call the DAO method to delete the client from the database
+                produitDao.supprimer(productIdToDelete);
+                // Reload client data after deleting
+                onLoadClientsButtonClick();
+            } catch (DAOException e) {
+                showAlert("Error", "Unable to delete product: " + e.getMessage(), Alert.AlertType.ERROR);
+            }
         } else {
-            // If no client is selected, display an error message or handle it accordingly
-            System.out.println("No client selected for deletion.");
+            showAlert("Warning", "No product selected for deletion.", Alert.AlertType.WARNING);
         }
     }
 
-
+    private void showAlert(String title, String message, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }
