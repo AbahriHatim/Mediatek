@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProductSelectionController {
 
@@ -85,17 +86,31 @@ public class ProductSelectionController {
     @FXML
     private void handleAddButtonClick() {
         Produit selectedProduct = productTableView.getSelectionModel().getSelectedItem();
-        int quantity = Integer.parseInt(quantityField.getText());
+        int quantityToAdd = Integer.parseInt(quantityField.getText());
+
+        // Vérifier si la quantité à ajouter est valide
+        if (quantityToAdd <= 0) {
+            showAlert(Alert.AlertType.ERROR, "Quantité invalide", "Veuillez entrer une quantité valide supérieure à zéro.");
+            return;
+        }
+
+        if (quantityToAdd > selectedProduct.getQuantite_en_stock()) {
+            showAlert(Alert.AlertType.ERROR, "Quantité insuffisante", "La quantité en stock de ce produit est insuffisante pour satisfaire votre demande.");
+            return;
+        }
+
         for (ProduitFacture pf : addedProducts) {
             if (pf.getProduit_id() == selectedProduct.getProduit_id()) {
                 showAlert(Alert.AlertType.ERROR, "Produit déjà ajouté", "Le produit " + selectedProduct.getNom() + " a déjà été ajouté.");
                 return; // Sortir de la méthode pour éviter d'ajouter le produit une deuxième fois
             }
         }
-        ProduitFacture produitFacture = new ProduitFacture(factureId, selectedProduct.getProduit_id(), quantity);
+
+        ProduitFacture produitFacture = new ProduitFacture(factureId, selectedProduct.getProduit_id(), quantityToAdd);
         addedProducts.add(produitFacture);
         updateAddedProductsTableView();
     }
+
 
     @FXML
     private void handleSubmitButtonClick() {
@@ -127,12 +142,15 @@ public class ProductSelectionController {
 
     private void loadProducts() {
         try {
-            List<Produit> produits = produitDAO.lister();
+            List<Produit> produits = produitDAO.lister().stream()
+                    .filter(produit -> produit.getQuantite_en_stock() > 0) // Filtrer les produits avec quantité > 0
+                    .collect(Collectors.toList());
             productTableView.getItems().setAll(produits);
         } catch (DAOException e) {
             e.printStackTrace();
         }
     }
+
 
     private void initializeAddedProductsTable() {
         addedProductIdColumn.setCellValueFactory(new PropertyValueFactory<>("produit_id"));
