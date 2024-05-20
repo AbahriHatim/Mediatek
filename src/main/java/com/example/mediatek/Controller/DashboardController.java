@@ -41,10 +41,12 @@ public class DashboardController {
     // Méthode appelée lors du clic sur le label "Facture"
     @FXML
     private void handleFactureClick() {
-        // Afficher la vue facture
-        hideAllViews();
+        // Masquer toutes les vues sauf la vue facture
         factureView.setVisible(true);
+        ClientView.setVisible(false); // Assurez-vous que les autres vues sont masquées
+        produitView.setVisible(false); // Assurez-vous que les autres vues sont masquées
     }
+
 
     private void hideAllViews() {
         if (factureView != null) factureView.setVisible(false);
