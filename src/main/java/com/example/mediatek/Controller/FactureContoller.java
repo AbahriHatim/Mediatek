@@ -5,6 +5,8 @@ import com.example.mediatek.ProduitFacture;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -14,6 +16,11 @@ import com.example.mediatek.Produit;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import javafx.scene.control.Alert;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 
@@ -77,8 +84,8 @@ public class FactureContoller {
 
     @FXML
     public void initialize() {
-        initializeClientTable();
-        initializeProduitTable();
+        /*initializeClientTable();
+        initializeProduitTable();*/
         initializeFactureTable();
 
 
@@ -217,7 +224,25 @@ protected void onAddFactureButtonClick() {
         alert.setContentText(message);
         alert.showAndWait();
     }
+    @FXML
+    private void handleAddFactureClick() {
+        // Create a new stage for the popup
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
 
+        try {
+            // Load the FXML for the popup
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/mediatek/add_facture_popup.fxml"));
+            AnchorPane popupContent = loader.load();
+
+            // Set up the stage
+            popupStage.setScene(new Scene(popupContent));
+            popupStage.setTitle("Ajouter Facture");
+            popupStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

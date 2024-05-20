@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.DashboardController" stylesheets="@styles.css" prefWidth="800" prefHeight="600">
+   <HBox spacing="10" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+      <!-- Barre de navigation -->
+      <VBox styleClass="navigation-bar" prefWidth="150">
+         <Label text="Dashboard" styleClass="navigation-label" onMouseClicked="#handleDashboardClick"/>
+         <Label text="Client" styleClass="navigation-label" onMouseClicked="#handleClientClick"/>
+         <Label text="Produit" styleClass="navigation-label" onMouseClicked="#handleProduitClick"/>
+         <Label text="Facture" styleClass="navigation-label" onMouseClicked="#handleFactureClick"/>
+      </VBox>
+   </HBox>
+
+   <!-- Include the Facture section initially hidden and positioned on the right -->
+   <fx:include source="facture.fxml" fx:id="factureView" visible="false" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"/>
+   <fx:include source="produit.fxml" fx:id="produitView" visible="false" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"/>
+
+   <fx:include source="Client.fxml" fx:id="ClientView" visible="false" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"/>
+</AnchorPane>

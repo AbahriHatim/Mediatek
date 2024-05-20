@@ -166,4 +166,35 @@ public class impProduit implements iProduit {
             }
         }
     }
+
+
+        // Méthode pour vérifier si un produit existe déjà dans une facture
+        public boolean checkProduitExistsInFacture(int factureId, int produitId) throws SQLException {
+            String query = "SELECT COUNT(*) FROM Produits_Facture WHERE facture_id = ? AND produit_id = ?";
+            try (Connection   connection = DataBaseConnection.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, factureId);
+                statement.setInt(2, produitId);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return resultSet.getInt(1) > 0;
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Méthode pour ajouter un produit à une facture
+        public void addProduitsFacture(int factureId, int produitId, int quantite) throws SQLException {
+            String query = "INSERT INTO Produits_Facture (facture_id, produit_id, quantite) VALUES (?, ?, ?)";
+            try (Connection   connection = DataBaseConnection.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, factureId);
+                statement.setInt(2, produitId);
+                statement.setInt(3, quantite);
+                statement.executeUpdate();
+            }
+        }
+
+
 }

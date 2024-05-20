@@ -190,7 +190,7 @@ public int createFacture(int clientId, Date invoiceDate) throws SQLException {
             itemStatement.setInt(1, factureId);
             itemStatement.setInt(2, produitId);
             itemStatement.setInt(3, quantite);
-
+            connection.commit();
             // Ajouter l'instruction à la batch
             itemStatement.addBatch();
 

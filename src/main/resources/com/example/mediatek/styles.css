@@ -1,0 +1,44 @@
+/* Styles pour la barre de navigation */
+.navigation-bar {
+    -fx-background-color: #2C3E50;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+
+/* Styles pour les éléments de la barre de navigation */
+.navigation-label {
+    -fx-text-fill: white;
+    -fx-cursor: pointer;
+}
+
+/* Styles pour les carrés d'information */
+.info-card {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-hgrow: always;
+    -fx-min-width: 200px; /* Largeur fixe */
+    -fx-min-height: 200px; /* Hauteur fixe */
+}
+
+/* Styles de couleur pour les carrés d'information */
+.info-card-red {
+    -fx-background-color: #E74C3C; /* Rouge */
+}
+
+.info-card-blue {
+    -fx-background-color: #3498DB; /* Bleu */
+}
+
+.info-card-green {
+    -fx-background-color: #2ECC71; /* Vert */
+}
+
+/* Styles pour les étiquettes dans les carrés d'information */
+.info-label {
+    -fx-text-fill: white;
+}
+
+.info-value {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+}
