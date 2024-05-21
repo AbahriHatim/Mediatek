@@ -1,18 +1,24 @@
-/*package com.example.mediatek;
+package com.example.mediatek;
+
+import com.example.mediatek.Client;
+import com.example.mediatek.ProduitFacture;
 import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.font.*;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class PDFGenerator {
 
-    public void generateInvoicePDF(Client client, List<Produit> produits, String filePath) throws IOException {
+    public void generateInvoicePDF(Client client, List<ProduitFacture> produits) throws IOException {
+        String homeDirectory = System.getProperty("user.home");
+        String downloadsDirectory = Paths.get(homeDirectory, "Downloads").toString();
+        String fileName = client.getNom() + "_Invoice.pdf";
+
+        // Construct the full file path
+        String filePath = Paths.get(downloadsDirectory, fileName).toString();
         try (PDDocument document = new PDDocument()) {
             PDPage page = new PDPage(PDRectangle.A4);
             document.addPage(page);
@@ -22,30 +28,38 @@ public class PDFGenerator {
                 float margin = 50;
                 float yStart = page.getMediaBox().getHeight() - margin;
                 float tableWidth = page.getMediaBox().getWidth() - 2 * margin;
-                float tableHeight = margin;
                 float rowHeight = 20;
                 float cellMargin = 5;
 
-                // Draw header row
-                drawRow(contentStream, margin, yStart, tableWidth, rowHeight, cellMargin, true, "Product Name", "Description", "Unit Price", "Quantity");
-                yStart -= rowHeight;
-
-                // Draw product rows
-                for (Produit produit : produits) {
-                    drawRow(contentStream, margin, yStart, tableWidth, rowHeight, cellMargin, false, produit.getNom(), produit.getDescription(), Double.toString(produit.getPrix_unitaire()), Integer.toString(produit.getQuantite_en_stock()));
-                    yStart -= rowHeight;
-                }
-
                 // Draw client information
-                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                contentStream.beginText();
+                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 14);
                 contentStream.newLineAtOffset(margin, yStart);
                 contentStream.showText("Client Information:");
-                contentStream.newLineAtOffset(0, -rowHeight);
+                yStart -= rowHeight;
                 contentStream.setFont(PDType1Font.HELVETICA, 12);
-                contentStream.showText("Name: " + client.getNom());
                 contentStream.newLineAtOffset(0, -rowHeight);
+                contentStream.showText("Name: " + client.getNom());
+                yStart -= rowHeight;
                 contentStream.showText("Address: " + client.getAdresse());
-                // Add more client details as needed
+                yStart -= rowHeight;
+                contentStream.showText("Email: " + client.getEmail());
+                yStart -= rowHeight;
+                contentStream.showText("Phone: " + client.getTelephone());
+                contentStream.endText();
+
+                // Draw table header
+                yStart -= 2 * rowHeight;
+                drawRow(contentStream, margin, yStart, tableWidth, rowHeight, cellMargin, true, "Product ID", "Quantity");
+
+                // Draw product rows
+                contentStream.setFont(PDType1Font.HELVETICA, 12);
+                for (ProduitFacture produit : produits) {
+                    yStart -= rowHeight;
+                    drawRow(contentStream, margin, yStart, tableWidth, rowHeight, cellMargin, false,
+                            String.valueOf(produit.getProduit_id()),
+                            String.valueOf(produit.getQuantite()));
+                }
             }
 
             document.save(filePath);
@@ -60,11 +74,7 @@ public class PDFGenerator {
         for (String text : content) {
             float stringWidth = font.getStringWidth(text) / 1000 * 12;
             float cellWidth = width / content.length;
-            float cellHeight = rowHeight;
             float xPosition = xStart + cellMargin;
-            if (!isHeader) {
-                contentStream.setFont(font, 12);
-            }
             contentStream.beginText();
             contentStream.newLineAtOffset(xPosition, yPosition);
             contentStream.showText(text);
@@ -73,4 +83,3 @@ public class PDFGenerator {
         }
     }
 }
-*/

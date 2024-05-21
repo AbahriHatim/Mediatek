@@ -225,6 +225,36 @@ public int createFacture(int clientId, Date invoiceDate) throws SQLException {
 
         return exists;
     }
+    // In ImpFacture class
+    public Client getClientById(int clientId) {
+        Client client = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            String sql = "SELECT * FROM CLIENTS WHERE client_id = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, clientId);
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                String name = resultSet.getString("nom");
+                String address = resultSet.getString("adresse");
+                String email = resultSet.getString("email");
+                String telephone = resultSet.getString("telephone");
+                client = new Client(clientId, name, address, email, telephone);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return client;
+    }
 
 
 

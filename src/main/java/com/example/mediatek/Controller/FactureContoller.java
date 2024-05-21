@@ -98,14 +98,20 @@ public class FactureContoller {
         addressColumn.setCellValueFactory(new PropertyValueFactory<>("adresse"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         telephoneColumn.setCellValueFactory(new PropertyValueFactory<>("telephone"));
-        onLoadClientsButtonClickClient();
+        loadClients();
+
         clientTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
-                nameClientField.setText(newSelection.getNom());
-
+                // Store or use the selected client information as needed
             }
         });
     }
+
+    private void loadClients() {
+        ObservableList<Client> clientList = FXCollections.observableArrayList(factureDao.listerClient());
+        clientTableView.setItems(clientList);
+    }
+
     private void initializeFactureTable() {
         idFactureColumn.setCellValueFactory(new PropertyValueFactory<>("facture_id"));
         ClientIdColumn.setCellValueFactory(new PropertyValueFactory<>("client_id"));

@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 public class AddFactureController {
-
+    private Client selectedClient;
     @FXML
     private TableView<Client> clientTableView;
 
@@ -50,18 +50,15 @@ public class AddFactureController {
         loadClients();
         nextButton.setDisable(true);
 
-        // Ajoute un écouteur d'événements à la sélection de la TableView
         clientTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
-                // Active le bouton "Next" si un client est sélectionné
                 nextButton.setDisable(false);
-
-                // Vous pouvez accéder à l'ID du client sélectionné ici
-                int selectedClientId = newSelection.getClient_id();
+                selectedClient = newSelection; // Update selectedClient when a client is selected
+                int selectedClientId = selectedClient.getClient_id();
                 System.out.println("Selected client ID: " + selectedClientId);
             } else {
-                // Désactive le bouton "Next" si aucun client n'est sélectionné
                 nextButton.setDisable(true);
+                selectedClient = null; // Reset selectedClient when no client is selected
             }
         });
     }
@@ -111,29 +108,31 @@ public class AddFactureController {
 
     private void openProductSelectionPopup(int factureId) {
         try {
-            // Charger le fichier FXML de la fenêtre de sélection des produits
+            // Load the FXML file of the product selection window
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/mediatek/product_selection_popup.fxml"));
             Scene scene = new Scene(loader.load());
 
-            // Créer une nouvelle fenêtre (stage) pour la fenêtre de sélection des produits
+            // Create a new stage for the product selection window
             Stage productStage = new Stage();
-            productStage.setTitle("Sélection des Produits");
+            productStage.setTitle("Product Selection");
             productStage.setScene(scene);
-            productStage.initModality(Modality.APPLICATION_MODAL); // Rendre la fenêtre modale
+            productStage.initModality(Modality.APPLICATION_MODAL);
 
-            // Obtenez le contrôleur de la fenêtre de sélection des produits
+            // Get the controller of the product selection window
             ProductSelectionController controller = loader.getController();
 
-            // Passer l'ID de la facture au contrôleur de la fenêtre de sélection des produits
+            // Pass the facture ID and the selected client to the product selection controller
             controller.setFactureId(factureId);
+            controller.setClient(selectedClient);
 
-            // Afficher la fenêtre de sélection des produits
+            // Show the product selection window
             productStage.showAndWait();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
 
 

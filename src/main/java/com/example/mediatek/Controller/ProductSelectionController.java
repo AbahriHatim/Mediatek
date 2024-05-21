@@ -1,7 +1,10 @@
 package com.example.mediatek.Controller;
 
+import com.example.mediatek.Client;
 import com.example.mediatek.Dao.DAOException;
+import com.example.mediatek.Dao.ImpFacture;
 import com.example.mediatek.Dao.impProduit;
+import com.example.mediatek.PDFGenerator;
 import com.example.mediatek.Produit;
 import com.example.mediatek.ProduitFacture;
 import javafx.fxml.FXML;
@@ -9,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,27 +114,42 @@ public class ProductSelectionController {
         addedProducts.add(produitFacture);
         updateAddedProductsTableView();
     }
+    private Client selectedClient;
 
-
+    public void setClient(Client client) {
+        this.selectedClient = client;
+    }
+    // In FactureController class
+    ImpFacture impFacture = new ImpFacture();
     @FXML
     private void handleSubmitButtonClick() {
+        if (selectedClient == null) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Client information is missing.");
+            return;
+        }
+
         try {
             for (ProduitFacture pf : addedProducts) {
-                boolean produitExistsInFacture = produitDAO.checkProduitExistsInFacture(pf.getFacture_id(), pf.getProduit_id());
-                if (!produitExistsInFacture) {
-                    produitDAO.addProduitsFacture(pf.getFacture_id(), pf.getProduit_id(), pf.getQuantite());
-                } else {
-                    showAlert(Alert.AlertType.ERROR, "Product Already Exists", "Product with ID " + pf.getProduit_id() + " already exists in facture " + pf.getFacture_id());
-                }
+                produitDAO.addProduitsFacture(pf.getFacture_id(), pf.getProduit_id(), pf.getQuantite());
             }
 
-            // Fermer la fenêtre de sélection de produits après soumission
+            // Retrieve client information by client_id
+            Client client = impFacture.getClientById(selectedClient.getClient_id());
+
+            PDFGenerator pdfGenerator = new PDFGenerator();
+            pdfGenerator.generateInvoicePDF(client, addedProducts);
+
             closeWindow();
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "SQL Error", e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Error", e.getMessage());
         }
     }
+
+
+
+
+
 
     private void initializeProductTable() {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("produit_id"));
