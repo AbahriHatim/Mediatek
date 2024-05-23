@@ -5,9 +5,9 @@ public class Client {
     private String nom;
     private String adresse;
     private String email;
-    private String telephone;
+    private Double telephone;
 
-    public Client(int client_id, String nom, String adresse, String email, String telephone) {
+    public Client(int client_id, String nom, String adresse, String email, Double telephone) {
         this.client_id = client_id;
         this.nom = nom;
         this.adresse = adresse;
@@ -48,11 +48,11 @@ public class Client {
         this.email = email;
     }
 
-    public String getTelephone() {
+    public Double getTelephone() {
         return telephone;
     }
 
-    public void setTelephone(String telephone) {
+    public void setTelephone(Double telephone) {
         this.telephone = telephone;
     }
 

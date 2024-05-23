@@ -5,15 +5,22 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
+
 <VBox alignment="CENTER" spacing="10.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.ClientController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
 
-    <Label fx:id="welcomeText"/>
+    <Label fx:id="welcomeText" text="Welcome to Client Management"/>
+    <Label layoutX="20" layoutY="290" text="Search by ID:"/>
+    <TextField fx:id="searchIdField" layoutX="120" layoutY="290"/>
+    <Label layoutX="280" layoutY="290" text="Search by Name:"/>
+    <TextField fx:id="searchNameField" layoutX="400" layoutY="290"/>
+    <Button text="Search" layoutX="520" layoutY="290" onAction="#handleSearchButtonClick"/>
+    <Button text="Load" layoutX="520" layoutY="290" onAction="#loadClientData"/>
+
     <TableView fx:id="clientTableView">
         <columns>
             <TableColumn text="ID" fx:id="idColumn"/>
@@ -24,23 +31,15 @@
         </columns>
     </TableView>
 
-
-    <!-- Button to load clients -->
-    <Button text="Load Clients" onAction="#onLoadClientsButtonClick"/>
-
-    <!-- Add Client section -->
     <VBox spacing="5.0">
-        <Label text="Add New Client"/>
+        <Label text="Add/Edit Client"/>
         <TextField fx:id="nameField" promptText="Name"/>
         <TextField fx:id="addressField" promptText="Address"/>
         <TextField fx:id="emailField" promptText="Email"/>
         <TextField fx:id="telephoneField" promptText="Telephone"/>
-        <Button text="Add Client" onAction="#onAddClientButtonClick"/>
+        <Button fx:id="addButton" text="Add Client" onAction="#onAddClientButtonClick"/>
     </VBox>
 
-    <!-- Button to edit a client -->
-    <Button text="Edit Client" onAction="#onEditClientButtonClick"/>
-
-    <!-- Button to delete a client -->
-    <Button text="Delete Client" onAction="#onDeleteClientButtonClick"/>
+    <Button fx:id="editButton" text="Edit Client" onAction="#onEditClientButtonClick" visible="false"/>
+    <Button fx:id="deleteButton" text="Delete Client" onAction="#onDeleteClientButtonClick" visible="false"/>
 </VBox>

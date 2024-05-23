@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.ProductSelectionController" prefWidth="600" prefHeight="400">
-    <TableView fx:id="productTableView" layoutX="20" layoutY="20" prefWidth="260" prefHeight="300">
+    <TableView fx:id="productTableView" layoutX="20" layoutY="20" prefWidth="260" prefHeight="300" onMouseClicked="#handleProductSelection">
         <columns>
             <TableColumn text="ID" fx:id="idColumn" prefWidth="70"/>
             <TableColumn text="Name" fx:id="nameColumn" prefWidth="150"/>
@@ -23,7 +23,7 @@
         </columns>
     </TableView>
 
-    <TextField fx:id="quantityField" layoutX="20" layoutY="330" prefWidth="100" promptText="Quantity"/>
-    <Button fx:id="addButton" text="Ajouter Produit" layoutX="130" layoutY="330" onAction="#handleAddButtonClick"/>
+    <TextField fx:id="quantityField" layoutX="20" layoutY="330" prefWidth="100" promptText="Enter Quantity" onKeyReleased="#handleQuantitySelection"/>
+    <Button fx:id="addButton" text="Ajouter Produit" layoutX="130" layoutY="330" onAction="#handleAddButtonClick" disable="true"/>
     <Button fx:id="submitButton" text="Submit" layoutX="250" layoutY="330" onAction="#handleSubmitButtonClick"/>
 </AnchorPane>

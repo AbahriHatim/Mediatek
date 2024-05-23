@@ -27,7 +27,7 @@ public class impView {
                     String name = resultSet.getString("nom");
                     String address = resultSet.getString("adresse");
                     String email = resultSet.getString("email");
-                    String telephone = resultSet.getString("telephone");
+                    Double telephone = resultSet.getDouble("telephone");
                     clients.add(new Client(id, name, address, email, telephone));
                 }
             } else {

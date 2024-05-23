@@ -63,7 +63,7 @@ public class ImpFacture {
                     String name = resultSet.getString("nom");
                     String address = resultSet.getString("adresse");
                     String email = resultSet.getString("email");
-                    String telephone = resultSet.getString("telephone");
+                    Double telephone = resultSet.getDouble("telephone");
                     clients.add(new Client(id, name, address, email, telephone));
                 }
             } else {
@@ -240,7 +240,7 @@ public int createFacture(int clientId, Date invoiceDate) throws SQLException {
                 String name = resultSet.getString("nom");
                 String address = resultSet.getString("adresse");
                 String email = resultSet.getString("email");
-                String telephone = resultSet.getString("telephone");
+                Double telephone = resultSet.getDouble("telephone");
                 client = new Client(clientId, name, address, email, telephone);
             }
         } catch (SQLException e) {

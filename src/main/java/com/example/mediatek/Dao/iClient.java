@@ -9,5 +9,5 @@ public interface iClient {
     void ajouter(Client client) throws DAOException;
     void edite(Client client) throws DAOException;
     void supprimer(int clientId) throws DAOException;
-
+    List<Client> Recherche(int clientId,String clientNom) throws  DAOException;
 }

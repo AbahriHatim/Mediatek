@@ -9,4 +9,5 @@ public interface iProduit {
     void supprimer(int produitId) throws DAOException;;
     void edite(Produit produit) throws DAOException;;
     List<Produit> lister() throws DAOException;;
+    List<Produit> Recherche(int productId, String produitNom) throws DAOException;;
 }

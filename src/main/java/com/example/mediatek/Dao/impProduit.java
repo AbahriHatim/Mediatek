@@ -1,5 +1,6 @@
 package com.example.mediatek.Dao;
 
+import com.example.mediatek.Client;
 import com.example.mediatek.DataBaseConnection;
 import com.example.mediatek.Produit;
 import java.sql.Connection;
@@ -11,6 +12,9 @@ import java.util.List;
 
 public class impProduit implements iProduit {
     private Connection connection;
+    public impProduit() {
+        connection = DataBaseConnection.getConnection();
+    }
 
     @Override
     public List<Produit> lister() throws DAOException {
@@ -196,5 +200,44 @@ public class impProduit implements iProduit {
             }
         }
 
+    @Override
+    public List<Produit> Recherche(int productId, String produitNom) throws DAOException {
+        List<Produit> filteredProduit = new ArrayList<>();
+        String query = "SELECT * FROM PRODUITS WHERE 1=1";
+        List<Object> params = new ArrayList<>();
 
+        if (productId != 0) {
+            query += " AND produit_id = ?";
+            params.add(productId);
+        }
+
+        if (produitNom != null && !produitNom.isEmpty()) {
+            query += " AND LOWER(NOM) LIKE ?";
+            params.add("%" + produitNom.toLowerCase() + "%");
+        }
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            // Set parameters for the prepared statement
+            for (int i = 0; i < params.size(); i++) {
+                statement.setObject(i + 1, params.get(i));
+            }
+
+            // Execute the query
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int produit_id = resultSet.getInt("produit_id");
+                    String nom = resultSet.getString("nom");
+                    String description = resultSet.getString("description");
+                    Double prix_unitaire = resultSet.getDouble("prix_unitaire");
+                    Integer quantite_en_stock = resultSet.getInt("quantite_en_stock");
+                    Produit produit = new Produit(produit_id, nom, description, prix_unitaire, quantite_en_stock);
+                    filteredProduit.add(new Produit(produit_id, nom, description, prix_unitaire, quantite_en_stock));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error searching clients", e);
+        }
+
+        return filteredProduit;
+    }
 }

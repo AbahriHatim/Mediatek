@@ -27,7 +27,7 @@ public class impClient implements iClient {
                 String name = resultSet.getString("nom");
                 String address = resultSet.getString("adresse");
                 String email = resultSet.getString("email");
-                String telephone = resultSet.getString("telephone");
+                Double telephone = resultSet.getDouble("telephone");
                 clients.add(new Client(id, name, address, email, telephone));
             }
         } catch (SQLException e) {
@@ -51,7 +51,7 @@ public class impClient implements iClient {
                 preparedStatement.setString(2, client.getNom());
                 preparedStatement.setString(3, client.getAdresse());
                 preparedStatement.setString(4, client.getEmail());
-                preparedStatement.setString(5, client.getTelephone());
+                preparedStatement.setDouble(5, client.getTelephone());
                 preparedStatement.executeUpdate();
             } else {
                 throw new DAOException("Failed to retrieve next client ID");
@@ -69,7 +69,7 @@ public class impClient implements iClient {
             preparedStatement.setString(1, client.getNom());
             preparedStatement.setString(2, client.getAdresse());
             preparedStatement.setString(3, client.getEmail());
-            preparedStatement.setString(4, client.getTelephone());
+            preparedStatement.setDouble(4, client.getTelephone());
             preparedStatement.setInt(5, client.getClient_id());
             int rowsUpdated = preparedStatement.executeUpdate();
             if (rowsUpdated == 0) {
@@ -128,5 +128,44 @@ public class impClient implements iClient {
                 e.printStackTrace();
             }
         }
+    }
+    @Override
+    public List<Client> Recherche(int clientId, String clientNom) throws DAOException {
+        List<Client> filteredClients = new ArrayList<>();
+        String query = "SELECT * FROM Clients WHERE 1=1";
+        List<Object> params = new ArrayList<>();
+
+        if (clientId != 0) {
+            query += " AND client_id = ?";
+            params.add(clientId);
+        }
+
+        if (clientNom != null && !clientNom.isEmpty()) {
+            query += " AND LOWER(nom) LIKE ?";
+            params.add("%" + clientNom.toLowerCase() + "%");
+        }
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            // Set parameters for the prepared statement
+            for (int i = 0; i < params.size(); i++) {
+                statement.setObject(i + 1, params.get(i));
+            }
+
+            // Execute the query
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("client_id");
+                    String name = resultSet.getString("nom");
+                    String address = resultSet.getString("adresse");
+                    String email = resultSet.getString("email");
+                    Double telephone = resultSet.getDouble("telephone");
+                    filteredClients.add(new Client(id, name, address, email, telephone));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error searching clients", e);
+        }
+
+        return filteredClients;
     }
 }

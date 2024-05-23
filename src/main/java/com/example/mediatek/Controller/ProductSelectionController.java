@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ProductSelectionController {
@@ -88,11 +89,56 @@ public class ProductSelectionController {
     }
 
     @FXML
+    private Produit selectedProduct; // Add this field to store the selected product
+
+    @FXML
+    private void handleProductSelection() {
+        selectedProduct = productTableView.getSelectionModel().getSelectedItem();
+        if (selectedProduct != null && !quantityField.getText().isEmpty()) {
+            addButton.setDisable(false);
+        } else {
+            addButton.setDisable(true);
+        }
+    }
+
+    @FXML
+    private void handleQuantitySelection() {
+        String quantityText = quantityField.getText();
+        if (!quantityText.isEmpty()) {
+            try {
+                int quantity = Integer.parseInt(quantityText);
+                if (quantity > 0) {
+                    addButton.setDisable(selectedProduct == null);
+                } else {
+                    addButton.setDisable(true);
+                    showAlert(Alert.AlertType.ERROR, "Quantité invalide", "Veuillez entrer une quantité valide supérieure à zéro.");
+                }
+            } catch (NumberFormatException e) {
+                addButton.setDisable(true);
+                showAlert(Alert.AlertType.ERROR, "Quantité invalide", "Veuillez entrer une quantité valide (un nombre entier).");
+            }
+        } else {
+            addButton.setDisable(true);
+        }
+    }
+
+    @FXML
+
     private void handleAddButtonClick() {
         Produit selectedProduct = productTableView.getSelectionModel().getSelectedItem();
-        int quantityToAdd = Integer.parseInt(quantityField.getText());
+        if (selectedProduct == null) {
+            showAlert(Alert.AlertType.ERROR, "Produit non sélectionné", "Veuillez sélectionner un produit.");
+            return;
+        }
 
-        // Vérifier si la quantité à ajouter est valide
+        int quantityToAdd;
+        try {
+            quantityToAdd = Integer.parseInt(quantityField.getText());
+        } catch (NumberFormatException e) {
+            // Show alert if the entered value is not a valid integer
+            showAlert(Alert.AlertType.ERROR, "Quantité invalide", "Veuillez entrer une quantité valide (un nombre).");
+            return;
+        }
         if (quantityToAdd <= 0) {
             showAlert(Alert.AlertType.ERROR, "Quantité invalide", "Veuillez entrer une quantité valide supérieure à zéro.");
             return;
@@ -103,11 +149,14 @@ public class ProductSelectionController {
             return;
         }
 
-        for (ProduitFacture pf : addedProducts) {
-            if (pf.getProduit_id() == selectedProduct.getProduit_id()) {
-                showAlert(Alert.AlertType.ERROR, "Produit déjà ajouté", "Le produit " + selectedProduct.getNom() + " a déjà été ajouté.");
-                return; // Sortir de la méthode pour éviter d'ajouter le produit une deuxième fois
-            }
+        // Check if the product is already added
+        Optional<ProduitFacture> existingProduct = addedProducts.stream()
+                .filter(pf -> pf.getProduit_id() == selectedProduct.getProduit_id())
+                .findFirst();
+
+        if (existingProduct.isPresent()) {
+            showAlert(Alert.AlertType.ERROR, "Produit déjà ajouté", "Le produit " + selectedProduct.getNom() + " a déjà été ajouté.");
+            return;
         }
 
         ProduitFacture produitFacture = new ProduitFacture(factureId, selectedProduct.getProduit_id(), quantityToAdd);
@@ -162,7 +211,7 @@ public class ProductSelectionController {
     private void loadProducts() {
         try {
             List<Produit> produits = produitDAO.lister().stream()
-                    .filter(produit -> produit.getQuantite_en_stock() > 0) // Filtrer les produits avec quantité > 0
+                    .filter(produit -> produit.getQuantite_en_stock() > 0)
                     .collect(Collectors.toList());
             productTableView.getItems().setAll(produits);
         } catch (DAOException e) {
