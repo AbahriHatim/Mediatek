@@ -11,6 +11,7 @@ module com.example.mediatek {
     requires eu.hansolo.tilesfx;
     requires java.sql;
     requires org.apache.pdfbox;
+    requires java.desktop;
 
 
     opens com.example.mediatek to javafx.fxml;

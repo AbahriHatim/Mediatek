@@ -201,12 +201,12 @@ public class impProduit implements iProduit {
         }
 
     @Override
-    public List<Produit> Recherche(int productId, String produitNom) throws DAOException {
+    public List<Produit> Recherche(Integer productId, String produitNom) throws DAOException {
         List<Produit> filteredProduit = new ArrayList<>();
         String query = "SELECT * FROM PRODUITS WHERE 1=1";
         List<Object> params = new ArrayList<>();
 
-        if (productId != 0) {
+        if (productId != null) {
             query += " AND produit_id = ?";
             params.add(productId);
         }
@@ -231,13 +231,14 @@ public class impProduit implements iProduit {
                     Double prix_unitaire = resultSet.getDouble("prix_unitaire");
                     Integer quantite_en_stock = resultSet.getInt("quantite_en_stock");
                     Produit produit = new Produit(produit_id, nom, description, prix_unitaire, quantite_en_stock);
-                    filteredProduit.add(new Produit(produit_id, nom, description, prix_unitaire, quantite_en_stock));
+                    filteredProduit.add(produit);
                 }
             }
         } catch (SQLException e) {
-            throw new DAOException("Error searching clients", e);
+            throw new DAOException("Error searching products", e);
         }
 
         return filteredProduit;
     }
+
 }

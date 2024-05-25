@@ -7,18 +7,12 @@ import org.apache.pdfbox.pdmodel.font.*;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 import java.io.*;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class PDFGenerator {
 
-    public void generateInvoicePDF(Client client, List<ProduitFacture> produits) throws IOException {
-        String homeDirectory = System.getProperty("user.home");
-        String downloadsDirectory = Paths.get(homeDirectory, "Downloads").toString();
-        String fileName = client.getNom() + "_Invoice.pdf";
-
-        // Construct the full file path
-        String filePath = Paths.get(downloadsDirectory, fileName).toString();
+    public byte[] generateInvoicePDF(Client client, List<ProduitFacture> produits) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (PDDocument document = new PDDocument()) {
             PDPage page = new PDPage(PDRectangle.A4);
             document.addPage(page);
@@ -62,8 +56,10 @@ public class PDFGenerator {
                 }
             }
 
-            document.save(filePath);
+            document.save(outputStream);
         }
+
+        return outputStream.toByteArray();
     }
 
     private void drawRow(PDPageContentStream contentStream, float xStart, float yStart, float width, float rowHeight, float cellMargin, boolean isHeader, String... content) throws IOException {

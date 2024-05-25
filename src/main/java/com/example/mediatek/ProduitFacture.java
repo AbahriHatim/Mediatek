@@ -10,6 +10,7 @@ public class ProduitFacture {
         this.produit_id = produit_id;
         this.quantite = quantite;
     }
+    public ProduitFacture(){}
     public ProduitFacture( int produit_id, int quantite) {
         this.produit_id = produit_id;
         this.quantite = quantite;

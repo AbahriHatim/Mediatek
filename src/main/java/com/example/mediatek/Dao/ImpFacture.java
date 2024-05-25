@@ -202,6 +202,31 @@ public int createFacture(int clientId, Date invoiceDate) throws SQLException {
             }
         }
     }
+    public void editeQuantity(int factureId, int produitId, int newQuantity) throws DAOException {
+        PreparedStatement statement = null;
+        try {
+            String sql = "UPDATE Produits_Facture SET quantite = ? WHERE FACTURE_ID = ? AND produit_id = ?";
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, newQuantity);
+            statement.setInt(2, factureId);
+            statement.setInt(3, produitId);
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated == 0) {
+                throw new DAOException("Failed to update quantity: Product not found in the invoice.");
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error editing product quantity", e);
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+            } catch (SQLException e) {
+                throw new DAOException("Error closing statement", e);
+            }
+        }
+    }
+
     public boolean checkProduitExistsInFacture(int factureId, int produitId) throws SQLException {
         boolean exists = false;
         PreparedStatement statement = null;
@@ -255,8 +280,39 @@ public int createFacture(int clientId, Date invoiceDate) throws SQLException {
         }
         return client;
     }
+    public void savePDF(int factureId, String fileName, byte[] pdfData) throws SQLException {
+        PreparedStatement seqStmt = connection.prepareStatement("SELECT seq_Invoices.NEXTVAL FROM DUAL");
+        ResultSet rs = seqStmt.executeQuery();
+        int nextId = 0; // Initialiser à 0
 
+        if (rs.next()) {
+            nextId = rs.getInt(1); // Obtenir la valeur de la séquence
+        }
+        String sql = "INSERT INTO Facture_PDFs (ID,id_facture, pdf_file_name, pdf_file_data) VALUES (?,?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, nextId);
+            statement.setLong(2, factureId);
+            statement.setString(3, fileName);
+            statement.setBytes(4, pdfData);
+            statement.executeUpdate();
+        }
+    }
 
-
+    public List<Invoice> getAllInvoices() throws SQLException {
+        List<Invoice> invoices = new ArrayList<>();
+        String sql = "SELECT id, id_facture, pdf_file_name, pdf_file_data FROM Facture_PDFs";
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                Long id = resultSet.getLong("id");
+                Long idFacture = resultSet.getLong("id_facture");
+                String pdfFileName = resultSet.getString("pdf_file_name");
+                Blob pdfBlob = resultSet.getBlob("pdf_file_data");
+                byte[] pdfData = pdfBlob.getBytes(1, (int) pdfBlob.length());
+                invoices.add(new Invoice(id, idFacture, pdfData, pdfFileName));
+            }
+        }
+        return invoices;
+    }
 }
 

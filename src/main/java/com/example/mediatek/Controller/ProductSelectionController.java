@@ -11,7 +11,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,7 +32,8 @@ public class ProductSelectionController {
 
     @FXML
     private TableColumn<Produit, String> nameColumn;
-
+    @FXML
+    private TableColumn<Produit, String> editeColumn;
     @FXML
     private TableColumn<Produit, String> descriptionColumn;
 
@@ -186,14 +190,37 @@ public class ProductSelectionController {
             Client client = impFacture.getClientById(selectedClient.getClient_id());
 
             PDFGenerator pdfGenerator = new PDFGenerator();
-            pdfGenerator.generateInvoicePDF(client, addedProducts);
+            byte[] pdfData = pdfGenerator.generateInvoicePDF(client, addedProducts);
 
+            String fileName = client.getNom() + "_Invoice.pdf";
+
+            // Save the PDF to the database
+            impFacture.savePDF(factureId, fileName, pdfData);
+
+            // Download the PDF
+            downloadPDF(pdfData, fileName);
+
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Invoice generated and downloaded successfully.");
             closeWindow();
         } catch (SQLException | IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error", e.getMessage());
         }
     }
+
+    private void downloadPDF(byte[] pdfData, String fileName) {
+        try {
+            File file = new File(System.getProperty("user.home") + "/Downloads/" + fileName);
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write(pdfData);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle error
+        }
+    }
+
+
 
 
 
@@ -222,31 +249,97 @@ public class ProductSelectionController {
 
     private void initializeAddedProductsTable() {
         addedProductIdColumn.setCellValueFactory(new PropertyValueFactory<>("produit_id"));
-
         addedQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantite"));
 
-        actionColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button deleteButton = new Button("Supprimer");
-
-            {
-                deleteButton.setOnAction(event -> {
-                    ProduitFacture produitFacture = getTableView().getItems().get(getIndex());
-                    addedProducts.remove(produitFacture);
-                    updateAddedProductsTableView();
-                });
-            }
-
+        // Edit column
+        TableColumn<ProduitFacture, Void> editColumn = new TableColumn<>("Edit");
+        editColumn.setPrefWidth(50);
+        Callback<TableColumn<ProduitFacture, Void>, TableCell<ProduitFacture, Void>> editCellFactory = new Callback<>() {
             @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(deleteButton);
+            public TableCell<ProduitFacture, Void> call(final TableColumn<ProduitFacture, Void> param) {
+                final TableCell<ProduitFacture, Void> cell = new TableCell<>() {
+                    private final Button editButton = new Button("Edit");
+
+                    {
+                        editButton.setOnAction(event -> {
+                            ProduitFacture produitFacture = getTableView().getItems().get(getIndex());
+                            openEditQuantityDialog(produitFacture);
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(editButton);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        editColumn.setCellFactory(editCellFactory);
+
+        // Action column
+        TableColumn<ProduitFacture, Void> actionColumn = new TableColumn<>("Action");
+        actionColumn.setPrefWidth(100);
+        Callback<TableColumn<ProduitFacture, Void>, TableCell<ProduitFacture, Void>> actionCellFactory = new Callback<>() {
+            @Override
+            public TableCell<ProduitFacture, Void> call(final TableColumn<ProduitFacture, Void> param) {
+                final TableCell<ProduitFacture, Void> cell = new TableCell<>() {
+                    private final Button deleteButton = new Button("Supprimer");
+
+                    {
+                        deleteButton.setOnAction(event -> {
+                            ProduitFacture produitFacture = getTableView().getItems().get(getIndex());
+                            addedProducts.remove(produitFacture);
+                            updateAddedProductsTableView();
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(deleteButton);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        actionColumn.setCellFactory(actionCellFactory);
+
+        addedProductsTableView.getColumns().addAll(editColumn, actionColumn);
+    }
+
+
+    private void openEditQuantityDialog(ProduitFacture produitFacture) {
+        TextInputDialog dialog = new TextInputDialog(String.valueOf(produitFacture.getQuantite()));
+        dialog.setTitle("Edit Quantity");
+        dialog.setHeaderText("Edit Quantity of Product");
+        dialog.setContentText("New Quantity:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(quantity -> {
+            try {
+                int newQuantity = Integer.parseInt(quantity);
+                if (newQuantity <= 0) {
+                    showAlert(Alert.AlertType.ERROR, "Invalid Quantity", "Please enter a valid quantity greater than zero.");
+                    return;
                 }
+                produitFacture.setQuantite(newQuantity);
+                updateAddedProductsTableView();
+            } catch (NumberFormatException e) {
+                showAlert(Alert.AlertType.ERROR, "Invalid Quantity", "Please enter a valid quantity (an integer number).");
             }
         });
     }
+
 
     private void updateAddedProductsTableView() {
         addedProductsTableView.getItems().clear();
@@ -265,4 +358,7 @@ public class ProductSelectionController {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+
+
 }

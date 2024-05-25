@@ -35,10 +35,7 @@ public class ProduitController implements Initializable {
     @FXML
     private TableColumn<Produit, Integer> quantite_en_stockColumn;
     @FXML
-    private TextField searchIdField;
-
-    @FXML
-    private TextField searchNameField;
+    private TextField searchField;
     @FXML
     private TextField nameField;
     @FXML
@@ -100,17 +97,29 @@ public class ProduitController implements Initializable {
     @FXML
     private void handleSearchButtonClick() {
         try {
-            int productId = Integer.parseInt(searchIdField.getText());
-            String produitNom = searchNameField.getText();
-            ObservableList<Produit> produits = FXCollections.observableArrayList(produitDao.Recherche(productId, produitNom));
+            String searchInput = searchField.getText();
+
+            Integer productId = null;
+            String productName = null;
+
+            // Try parsing the input as an integer (for ID)
+            try {
+                productId = Integer.parseInt(searchInput);
+            } catch (NumberFormatException e) {
+                // If parsing fails, assume it's a product name
+                productName = searchInput;
+            }
+
+            ObservableList<Produit> produits = FXCollections.observableArrayList(produitDao.Recherche(productId, productName));
             clientTableView.setItems(produits);
-        } catch (NumberFormatException e) {
-            showAlert("Error", "Invalid client ID format.", Alert.AlertType.ERROR);
         } catch (DAOException e) {
-            showAlert("Error", "Failed to search clients: " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Error", "Failed to search products: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-        @FXML
+
+
+
+    @FXML
     protected void onAddClientButtonClick() {
         String name = nameField.getText();
         String description = descriptionField.getText();

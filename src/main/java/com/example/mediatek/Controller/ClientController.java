@@ -3,6 +3,7 @@ package com.example.mediatek.Controller;
 import com.example.mediatek.Client;
 import com.example.mediatek.Dao.DAOException;
 import com.example.mediatek.Dao.impClient;
+import com.example.mediatek.Produit;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -34,10 +35,7 @@ public class ClientController implements Initializable {
     @FXML
     private TableColumn<Client, String> telephoneColumn;
     @FXML
-    private TextField searchIdField;
-
-    @FXML
-    private TextField searchNameField;
+    private TextField searchField;
     @FXML
     private TextField nameField;
     @FXML
@@ -150,14 +148,23 @@ public class ClientController implements Initializable {
     @FXML
     private void handleSearchButtonClick() {
         try {
-            int clientId = Integer.parseInt(searchIdField.getText());
-            String clientName = searchNameField.getText();
-            ObservableList<Client> clients = FXCollections.observableArrayList(clientDao.Recherche(clientId, clientName));
-            clientTableView.setItems(clients);
-        } catch (NumberFormatException e) {
-            showAlert("Error", "Invalid client ID format.", Alert.AlertType.ERROR);
+            String searchInput = searchField.getText();
+
+            Integer clientId = null;
+            String clientName = null;
+
+            // Try parsing the input as an integer (for ID)
+            try {
+                clientId = Integer.parseInt(searchInput);
+            } catch (NumberFormatException e) {
+                // If parsing fails, assume it's a product name
+                clientName = searchInput;
+            }
+
+            ObservableList<Client> client = FXCollections.observableArrayList(clientDao.Recherche(clientId, clientName));
+            clientTableView.setItems(client);
         } catch (DAOException e) {
-            showAlert("Error", "Failed to search clients: " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Error", "Failed to search products: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 

@@ -20,6 +20,7 @@
             <TableColumn text="ID" fx:id="addedProductIdColumn" prefWidth="70"/>
             <TableColumn text="Quantité" fx:id="addedQuantityColumn" prefWidth="140"/>
             <TableColumn text="Action" fx:id="actionColumn" prefWidth="100"/>
+            <TableColumn text="Edit" fx:id="editColumn" prefWidth="50"/>
         </columns>
     </TableView>
 

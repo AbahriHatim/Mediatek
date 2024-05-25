@@ -14,11 +14,9 @@
     </padding>
 
     <Label fx:id="welcomeText" text="Welcome to Client Management"/>
-    <Label layoutX="20" layoutY="290" text="Search by ID:"/>
-    <TextField fx:id="searchIdField" layoutX="120" layoutY="290"/>
-    <Label layoutX="280" layoutY="290" text="Search by Name:"/>
-    <TextField fx:id="searchNameField" layoutX="400" layoutY="290"/>
-    <Button text="Search" layoutX="520" layoutY="290" onAction="#handleSearchButtonClick"/>
+    <Label layoutX="20" layoutY="290" text="Search:"/>
+    <TextField fx:id="searchField" layoutX="120" layoutY="290"/>
+    <Button text="Search" layoutX="250" layoutY="290" onAction="#handleSearchButtonClick"/>
     <Button text="Load" layoutX="520" layoutY="290" onAction="#loadClientData"/>
 
     <TableView fx:id="clientTableView">

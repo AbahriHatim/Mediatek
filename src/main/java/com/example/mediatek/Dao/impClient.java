@@ -130,12 +130,12 @@ public class impClient implements iClient {
         }
     }
     @Override
-    public List<Client> Recherche(int clientId, String clientNom) throws DAOException {
+    public List<Client> Recherche(Integer clientId, String clientNom) throws DAOException {
         List<Client> filteredClients = new ArrayList<>();
         String query = "SELECT * FROM Clients WHERE 1=1";
         List<Object> params = new ArrayList<>();
 
-        if (clientId != 0) {
+        if (clientId != null) {
             query += " AND client_id = ?";
             params.add(clientId);
         }
@@ -168,4 +168,5 @@ public class impClient implements iClient {
 
         return filteredClients;
     }
+
 }
