@@ -17,10 +17,9 @@
     </TableView>
     <TableView fx:id="addedProductsTableView" layoutX="320" layoutY="20" prefWidth="360" prefHeight="300">
         <columns>
-            <TableColumn text="ID" fx:id="addedProductIdColumn" prefWidth="70"/>
-            <TableColumn text="Quantité" fx:id="addedQuantityColumn" prefWidth="140"/>
-            <TableColumn text="Action" fx:id="actionColumn" prefWidth="100"/>
-            <TableColumn text="Edit" fx:id="editColumn" prefWidth="50"/>
+            <TableColumn fx:id="addedProductIdColumn" text="ID" />
+            <TableColumn fx:id="addedQuantityColumn" text="Quantité" />
+
         </columns>
     </TableView>
 

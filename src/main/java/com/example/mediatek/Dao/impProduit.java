@@ -240,5 +240,28 @@ public class impProduit implements iProduit {
 
         return filteredProduit;
     }
+    public Produit getProduitById(int produitId) throws DAOException {
+        Produit produit = null;
+        String sql = "SELECT nom, prix_unitaire FROM PRODUITS WHERE produit_id = ?";
+        try (Connection connection = DataBaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, produitId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    String nom = resultSet.getString("nom");
+                    double prix_unitaire = resultSet.getDouble("prix_unitaire");
+                    produit = new Produit(produitId, nom, "", prix_unitaire, 0); // Vous pouvez ajuster le constructeur de Produit
+                } else {
+                    throw new DAOException("Produit non trouvé pour l'ID : " + produitId);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Erreur lors de la récupération du produit avec l'ID : " + produitId, e);
+        }
+        return produit;
+    }
 
 }
+
+
+

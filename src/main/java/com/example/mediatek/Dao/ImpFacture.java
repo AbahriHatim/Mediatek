@@ -314,5 +314,6 @@ public int createFacture(int clientId, Date invoiceDate) throws SQLException {
         }
         return invoices;
     }
+
 }
 
