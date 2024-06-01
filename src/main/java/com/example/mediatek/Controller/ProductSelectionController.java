@@ -261,7 +261,7 @@ public class ProductSelectionController {
 
         // Edit column
         TableColumn<ProduitFacture, Void> editColumn = new TableColumn<>("Edit");
-        editColumn.setPrefWidth(50);
+        editColumn.setPrefWidth(80);
         Callback<TableColumn<ProduitFacture, Void>, TableCell<ProduitFacture, Void>> editCellFactory = new Callback<>() {
             @Override
             public TableCell<ProduitFacture, Void> call(final TableColumn<ProduitFacture, Void> param) {

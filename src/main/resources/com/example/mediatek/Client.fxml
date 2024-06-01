@@ -19,7 +19,7 @@
     <Button text="Search" layoutX="250" layoutY="290" onAction="#handleSearchButtonClick"/>
     <Button text="Load" layoutX="520" layoutY="290" onAction="#loadClientData"/>
 
-    <TableView fx:id="clientTableView">
+    <TableView fx:id="clientTableView" prefWidth="500.0">
         <columns>
             <TableColumn text="ID" fx:id="idColumn"/>
             <TableColumn text="Name" fx:id="nameColumn"/>

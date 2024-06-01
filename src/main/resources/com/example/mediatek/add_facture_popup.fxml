@@ -4,8 +4,8 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.AddFactureController" prefWidth="600" prefHeight="400">
-    <TableView fx:id="clientTableView" layoutX="20" layoutY="20" prefWidth="560" prefHeight="300">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.AddFactureController" prefWidth="600" prefHeight="400" stylesheets="@styles.css" styleClass="anchor-pane">
+    <TableView fx:id="clientTableView" layoutX="20" layoutY="20" prefWidth="560" prefHeight="300" styleClass="table-view">
         <columns>
             <TableColumn text="ID" fx:id="idColumn" prefWidth="70"/>
             <TableColumn text="Name" fx:id="nameClientColumn" prefWidth="100"/>
@@ -15,7 +15,5 @@
         </columns>
     </TableView>
 
-
     <Button fx:id="nextButton" text="Next" layoutX="480" layoutY="340" styleClass="add-button" onAction="#handleNextClick"/>
-
 </AnchorPane>

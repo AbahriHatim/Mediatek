@@ -27,7 +27,7 @@ public class DashboardController {
     private void handleClientClick() {
         // Logic pour afficher la vue Client
         hideAllViews();
-        ClientView.setVisible(true);
+        if (ClientView != null) ClientView.setVisible(true);
     }
 
     // Méthode appelée lors du clic sur le label "Produit"
@@ -35,18 +35,16 @@ public class DashboardController {
     private void handleProduitClick() {
         // Logic pour afficher la vue Produit
         hideAllViews();
-        produitView.setVisible(true);
+        if (produitView != null) produitView.setVisible(true);
     }
 
     // Méthode appelée lors du clic sur le label "Facture"
     @FXML
     private void handleFactureClick() {
-        // Masquer toutes les vues sauf la vue facture
-        factureView.setVisible(true);
-        ClientView.setVisible(false); // Assurez-vous que les autres vues sont masquées
-        produitView.setVisible(false); // Assurez-vous que les autres vues sont masquées
+        // Logic pour afficher la vue Facture
+        hideAllViews();
+        if (factureView != null) factureView.setVisible(true);
     }
-
 
     private void hideAllViews() {
         if (factureView != null) factureView.setVisible(false);
