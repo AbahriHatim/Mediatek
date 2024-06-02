@@ -57,7 +57,7 @@ public class DashboardDataController {
     }
 
     private void updateBarCharts(List<DailyData> dailyData) {
-        // Clear existing data
+
         salesChart.getData().clear();
         revenueChart.getData().clear();
 

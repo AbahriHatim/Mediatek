@@ -203,6 +203,7 @@ public class ProduitController implements Initializable {
     protected void onAddClientButtonClick() {
         String name = nameField.getText();
         String description = descriptionField.getText();
+
         Double prix_unitaire;
         Integer quantite_en_stock;
         try {

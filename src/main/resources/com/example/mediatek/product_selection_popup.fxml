@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.ProductSelectionController" prefWidth="600" prefHeight="400" stylesheets="@styles.css" styleClass="anchor-pane">
-    <TableView fx:id="productTableView" layoutX="20" layoutY="20" prefWidth="260" prefHeight="300" onMouseClicked="#handleProductSelection" styleClass="table-view">
+    <TableView fx:id="productTableView" layoutX="20" layoutY="20" prefWidth="660" prefHeight="300" onMouseClicked="#handleProductSelection" styleClass="table-view">
         <columns>
             <TableColumn text="ID" fx:id="idColumn" prefWidth="70"/>
             <TableColumn text="Name" fx:id="nameColumn" prefWidth="150"/>
@@ -16,7 +16,7 @@
         </columns>
     </TableView>
 
-    <TableView fx:id="addedProductsTableView" layoutX="320" layoutY="20" prefWidth="260" prefHeight="300" styleClass="table-view">
+    <TableView fx:id="addedProductsTableView" layoutX="820" layoutY="20" prefWidth="400" prefHeight="300" styleClass="table-view">
         <columns>
             <TableColumn fx:id="addedProductIdColumn" text="ID" prefWidth="50"/>
             <TableColumn fx:id="addedQuantityColumn" text="Quantité" prefWidth="50"/>
@@ -24,6 +24,6 @@
     </TableView>
 
     <TextField fx:id="quantityField" layoutX="20" layoutY="330" prefWidth="100" promptText="Enter Quantity" onKeyReleased="#handleQuantitySelection" styleClass="text-field"/>
-    <Button fx:id="addButton" text="Ajouter Produit" layoutX="130" layoutY="330" onAction="#handleAddButtonClick" disable="true" styleClass="button"/>
-    <Button fx:id="submitButton" text="Submit" layoutX="250" layoutY="330" onAction="#handleSubmitButtonClick" styleClass="button"/>
+    <Button fx:id="addButton" text="Ajouter Produit" layoutX="180" layoutY="330" onAction="#handleAddButtonClick" disable="true" styleClass="button"/>
+    <Button fx:id="submitButton" text="Submit" layoutX="350" layoutY="330" onAction="#handleSubmitButtonClick" styleClass="button"/>
 </AnchorPane>

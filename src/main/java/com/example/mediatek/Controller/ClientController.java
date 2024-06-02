@@ -22,10 +22,9 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ClientController implements Initializable {
-    @FXML
-    private Label welcomeText;
 
-    private impClient clientDao = new impClient(); // Instantiate your DAO
+
+    private impClient clientDao = new impClient();
 
     @FXML
     private TableView<Client> clientTableView;

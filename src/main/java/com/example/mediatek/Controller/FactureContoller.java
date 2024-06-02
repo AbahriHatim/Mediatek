@@ -95,6 +95,7 @@ public class FactureContoller {
         actionsColumn.setCellFactory(param -> new TableCell<>() {
             private final Button btnView = new Button("View");
             private final Button btnDownload = new Button("Download");
+            private final Button btnDelete = new Button("Delete");
 
             {
                 btnView.setOnAction(event -> {
@@ -107,7 +108,12 @@ public class FactureContoller {
                     handleDownloadFacture(facture);
                 });
 
-                HBox hbox = new HBox(btnView, btnDownload);
+                btnDelete.setOnAction(event -> {
+                    Facture facture = getTableView().getItems().get(getIndex());
+                    handleDeleteFacture(facture);
+                });
+
+                HBox hbox = new HBox(btnView, btnDownload, btnDelete);
                 hbox.setSpacing(10);
                 setGraphic(hbox);
             }
@@ -118,7 +124,7 @@ public class FactureContoller {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    HBox hbox = new HBox(btnView, btnDownload);
+                    HBox hbox = new HBox(btnView, btnDownload, btnDelete);
                     hbox.setSpacing(10);
                     setGraphic(hbox);
                 }
@@ -126,6 +132,24 @@ public class FactureContoller {
         });
     }
 
+    private void handleDeleteFacture(Facture facture) {
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationAlert.setTitle("Delete Facture");
+        confirmationAlert.setHeaderText("Are you sure you want to delete this facture?");
+        confirmationAlert.setContentText("Facture ID: " + facture.getFacture_id());
+
+        confirmationAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    factureDao.deleteFacture(facture.getFacture_id());
+                    loadFactures();
+                    showAlert(Alert.AlertType.INFORMATION, "Success", "Facture deleted successfully.");
+                } catch (DAOException e) {
+                    showAlert(Alert.AlertType.ERROR, "Error", "An error occurred while deleting the facture: " + e.getMessage());
+                }
+            }
+        });
+    }
     private void handleViewFacture(Facture facture) {
         try {
             File pdfFile = factureDao.getFacturePDF(facture.getFacture_id());

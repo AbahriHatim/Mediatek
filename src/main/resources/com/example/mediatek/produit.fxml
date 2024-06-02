@@ -21,8 +21,10 @@
     <HBox spacing="10.0" alignment="CENTER">
     <Button text="Search" layoutX="250" layoutY="290" onAction="#handleSearchButtonClick"/>
     <Button text="Load" layoutX="520" layoutY="290" onAction="#loadProductData"/>
+        <Button fx:id="viewStockAuditButton" text="View Stock Audit" onAction="#onViewStockAuditButtonClick"/>
+        <Button fx:id="viewAllDemandesButton" text="View All Demandes" onAction="#onViewAllDemandesButtonClick"/>
     </HBox>
-    <TableView fx:id="clientTableView" prefHeight="200">
+    <TableView fx:id="clientTableView" prefHeight="300" >
         <columns>
             <TableColumn text="ID" fx:id="idColumn"/>
             <TableColumn text="Name" fx:id="nameColumn"/>
@@ -32,7 +34,7 @@
         </columns>
     </TableView>
     <Label fx:id="demandeLabel" text="Demande: "/>
-    <VBox spacing="5.0">
+    <VBox spacing="5.0" prefWidth="550" >
         <Label text="Add/Edit Produit"/>
         <TextField fx:id="nameField" promptText="Name"/>
         <TextField fx:id="descriptionField" promptText="Description"/>
@@ -48,7 +50,6 @@
 
 
     <HBox spacing="10.0"  alignment="CENTER">
-    <Button fx:id="viewStockAuditButton" text="View Stock Audit" onAction="#onViewStockAuditButtonClick"/>
-    <Button fx:id="viewAllDemandesButton" text="View All Demandes" onAction="#onViewAllDemandesButtonClick"/>
+
     </HBox>
 </VBox>

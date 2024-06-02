@@ -204,30 +204,7 @@ public int createFacture(int clientId, Date invoiceDate) throws SQLException {
             }
         }
     }
-    public void editeQuantity(int factureId, int produitId, int newQuantity) throws DAOException {
-        PreparedStatement statement = null;
-        try {
-            String sql = "UPDATE Produits_Facture SET quantite = ? WHERE FACTURE_ID = ? AND produit_id = ?";
-            statement = connection.prepareStatement(sql);
-            statement.setInt(1, newQuantity);
-            statement.setInt(2, factureId);
-            statement.setInt(3, produitId);
-            int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated == 0) {
-                throw new DAOException("Failed to update quantity: Product not found in the invoice.");
-            }
-        } catch (SQLException e) {
-            throw new DAOException("Error editing product quantity", e);
-        } finally {
-            try {
-                if (statement != null) {
-                    statement.close();
-                }
-            } catch (SQLException e) {
-                throw new DAOException("Error closing statement", e);
-            }
-        }
-    }
+
 
     public boolean checkProduitExistsInFacture(int factureId, int produitId) throws SQLException {
         boolean exists = false;
@@ -343,6 +320,120 @@ public int createFacture(int clientId, Date invoiceDate) throws SQLException {
             }
         }
     }
+    public void supprimer(int client_id) throws DAOException {
+        PreparedStatement stmtSelectFactures = null;
+        PreparedStatement stmtDeleteProduitsFacture = null;
+        PreparedStatement stmtDeleteFacturePdf = null;
+        PreparedStatement stmtDeleteFactures = null;
+        PreparedStatement stmtDeleteClient = null;
 
+        try {
+            connection.setAutoCommit(false);
+
+            String selectFacturesSQL = "SELECT facture_id FROM Factures WHERE client_id = ?";
+            stmtSelectFactures = connection.prepareStatement(selectFacturesSQL);
+            stmtSelectFactures.setInt(1, client_id);
+            ResultSet rsFactures = stmtSelectFactures.executeQuery();
+
+            String deleteProduitsFactureSQL = "DELETE FROM Produits_Facture WHERE facture_id = ?";
+            stmtDeleteProduitsFacture = connection.prepareStatement(deleteProduitsFactureSQL);
+
+            String deleteFacturePdfSQL = "DELETE FROM facture_pdfs WHERE id_facture = ?";
+            stmtDeleteFacturePdf = connection.prepareStatement(deleteFacturePdfSQL);
+
+            while (rsFactures.next()) {
+                int facture_id = rsFactures.getInt("facture_id");
+
+                // Delete related records in Produits_Facture
+                stmtDeleteProduitsFacture.setInt(1, facture_id);
+                stmtDeleteProduitsFacture.executeUpdate();
+
+                // Delete related records in facture_pdf
+                stmtDeleteFacturePdf.setInt(1, facture_id);
+                stmtDeleteFacturePdf.executeUpdate();
+            }
+
+            // Delete related records in Factures
+            String deleteFacturesSQL = "DELETE FROM Factures WHERE client_id = ?";
+            stmtDeleteFactures = connection.prepareStatement(deleteFacturesSQL);
+            stmtDeleteFactures.setInt(1, client_id);
+            stmtDeleteFactures.executeUpdate();
+
+            // Delete the client
+            String deleteClientSQL = "DELETE FROM Clients WHERE client_id = ?";
+            stmtDeleteClient = connection.prepareStatement(deleteClientSQL);
+            stmtDeleteClient.setInt(1, client_id);
+            stmtDeleteClient.executeUpdate();
+
+            // Commit transaction
+            connection.commit();
+        } catch (SQLException e) {
+            // Rollback transaction on error
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error rolling back transaction", ex);
+                }
+            }
+            throw new DAOException("Error deleting client", e);
+        } finally {
+            // Close all statements and result sets
+            try {
+                if (stmtSelectFactures != null) stmtSelectFactures.close();
+                if (stmtDeleteProduitsFacture != null) stmtDeleteProduitsFacture.close();
+                if (stmtDeleteFacturePdf != null) stmtDeleteFacturePdf.close();
+                if (stmtDeleteFactures != null) stmtDeleteFactures.close();
+                if (stmtDeleteClient != null) stmtDeleteClient.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void deleteFacture(int factureId) throws DAOException {
+        Connection conn = null;
+        PreparedStatement pstmt1 = null;
+        PreparedStatement pstmt2 = null;
+        PreparedStatement pstmt3 = null;
+
+        try {
+            conn   = DataBaseConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            // Delete from Facture_PDFs table
+            String sql1 = "DELETE FROM Facture_PDFs WHERE ID_FACTURE = ?";
+            pstmt1 = conn.prepareStatement(sql1);
+            pstmt1.setInt(1, factureId);
+            pstmt1.executeUpdate();
+
+            // Delete from Produits_Facture table
+            String sql2 = "DELETE FROM Produits_Facture WHERE facture_id = ?";
+            pstmt2 = conn.prepareStatement(sql2);
+            pstmt2.setInt(1, factureId);
+            pstmt2.executeUpdate();
+
+            // Delete from Factures table
+            String sql3 = "DELETE FROM Factures WHERE facture_id = ?";
+            pstmt3 = conn.prepareStatement(sql3);
+            pstmt3.setInt(1, factureId);
+            pstmt3.executeUpdate();
+
+            conn.commit();
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw new DAOException("Error deleting facture", e);
+        } finally {
+            if (pstmt1 != null) try { pstmt1.close(); } catch (SQLException e) { e.printStackTrace(); }
+            if (pstmt2 != null) try { pstmt2.close(); } catch (SQLException e) { e.printStackTrace(); }
+            if (pstmt3 != null) try { pstmt3.close(); } catch (SQLException e) { e.printStackTrace(); }
+            if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+    }
 }
 

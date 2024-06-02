@@ -65,10 +65,10 @@ public class impProduit implements iProduit {
             PreparedStatement seqStmt = connection.prepareStatement("SELECT PRODUIT_SEQ.NEXTVAL FROM DUAL");
             ResultSet rs = seqStmt.executeQuery();
 
-            int nextId = 0; // Initialiser à 0
+            int nextId = 0;
 
             if (rs.next()) {
-                nextId = rs.getInt(1); // Obtenir la valeur de la séquence
+                nextId = rs.getInt(1);
             }
             String sql = "INSERT INTO PRODUITS (produit_id, nom, description, prix_unitaire, quantite_en_stock) VALUES (?, ?, ?, ?, ?)";
             statement = connection.prepareStatement(sql);
@@ -124,15 +124,13 @@ public class impProduit implements iProduit {
         try {
             connection = DataBaseConnection.getConnection();
             if (connection != null) {
-                connection.setAutoCommit(false); // Start transaction
+                connection.setAutoCommit(false);
 
-                // Delete from Produits_Facture if the product is associated with any facture
                 String deleteFromProduitsFactureSql = "DELETE FROM Produits_Facture WHERE produit_id = ?";
                 statement = connection.prepareStatement(deleteFromProduitsFactureSql);
                 statement.setInt(1, produitId);
                 statement.executeUpdate();
 
-                // Find and delete orphaned Factures
                 String findOrphanedFacturesSql = "SELECT facture_id FROM Factures f WHERE NOT EXISTS (SELECT 1 FROM Produits_Facture pf WHERE f.facture_id = pf.facture_id)";
                 PreparedStatement findOrphanedStatement = connection.prepareStatement(findOrphanedFacturesSql);
                 ResultSet orphanedFactures = findOrphanedStatement.executeQuery();
@@ -140,20 +138,17 @@ public class impProduit implements iProduit {
                 while (orphanedFactures.next()) {
                     int orphanedFactureId = orphanedFactures.getInt("facture_id");
 
-                    // Delete from facture_pdf
                     String deleteFromFacturePdfSql = "DELETE FROM facture_pdfs WHERE id_facture = ?";
                     PreparedStatement deleteFromFacturePdfStatement = connection.prepareStatement(deleteFromFacturePdfSql);
                     deleteFromFacturePdfStatement.setInt(1, orphanedFactureId);
                     deleteFromFacturePdfStatement.executeUpdate();
 
-                    // Delete from Factures
                     String deleteOrphanedFactureSql = "DELETE FROM Factures WHERE facture_id = ?";
                     PreparedStatement deleteOrphanedStatement = connection.prepareStatement(deleteOrphanedFactureSql);
                     deleteOrphanedStatement.setInt(1, orphanedFactureId);
                     deleteOrphanedStatement.executeUpdate();
                 }
 
-                // Delete from Produits
                 String deleteFromProduitsSql = "DELETE FROM PRODUITS WHERE produit_id = ?";
                 statement = connection.prepareStatement(deleteFromProduitsSql);
                 statement.setInt(1, produitId);
@@ -169,7 +164,7 @@ public class impProduit implements iProduit {
         } catch (SQLException e) {
             if (connection != null) {
                 try {
-                    connection.rollback(); // Rollback transaction on error
+                    connection.rollback();
                 } catch (SQLException ex) {
                     throw new DAOException("Error rolling back transaction", ex);
                 }
@@ -186,7 +181,6 @@ public class impProduit implements iProduit {
     }
 
 
-        // Méthode pour vérifier si un produit existe déjà dans une facture
         public boolean checkProduitExistsInFacture(int factureId, int produitId) throws SQLException {
             String query = "SELECT COUNT(*) FROM Produits_Facture WHERE facture_id = ? AND produit_id = ?";
             try (Connection   connection = DataBaseConnection.getConnection();
@@ -231,7 +225,7 @@ public class impProduit implements iProduit {
         }
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            // Set parameters for the prepared statement
+
             for (int i = 0; i < params.size(); i++) {
                 statement.setObject(i + 1, params.get(i));
             }
@@ -275,6 +269,8 @@ public class impProduit implements iProduit {
         }
         return produit;
     }
+
+    //discount
     public static double getDiscountedPrice(int productId, double discountPercentage) throws SQLException {
         double discountedPrice = 0.0;
         String sql = "{? = call get_discounted_price(?, ?)}";

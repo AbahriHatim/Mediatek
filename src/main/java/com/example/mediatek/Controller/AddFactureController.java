@@ -91,10 +91,10 @@ public class AddFactureController {
 
     @FXML
     private void handleNextClick() {
-        // Obtenez le client sélectionné
+
         Client selectedClient = clientTableView.getSelectionModel().getSelectedItem();
         if (selectedClient == null) {
-            // Affichez un message d'erreur ou prenez d'autres mesures appropriées si aucun client n'est sélectionné
+
             return;
         }
 
@@ -113,24 +113,20 @@ public class AddFactureController {
 
     private void openProductSelectionPopup(int factureId) {
         try {
-            // Load the FXML file of the product selection window
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/mediatek/product_selection_popup.fxml"));
             Scene scene = new Scene(loader.load());
 
-            // Create a new stage for the product selection window
             Stage productStage = new Stage();
             productStage.setTitle("Product Selection");
             productStage.setScene(scene);
             productStage.initModality(Modality.APPLICATION_MODAL);
 
-            // Get the controller of the product selection window
             ProductSelectionController controller = loader.getController();
 
-            // Pass the facture ID and the selected client to the product selection controller
             controller.setFactureId(factureId);
             controller.setClient(selectedClient);
 
-            // Show the product selection window
             productStage.showAndWait();
 
         } catch (IOException e) {

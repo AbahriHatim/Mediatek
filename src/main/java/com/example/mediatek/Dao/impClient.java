@@ -88,16 +88,13 @@ public class impClient implements iClient {
         PreparedStatement stmtDeleteClient = null;
 
         try {
-            // Begin transaction
             connection.setAutoCommit(false);
 
-            // Select all facture_ids related to the client
             String selectFacturesSQL = "SELECT facture_id FROM Factures WHERE client_id = ?";
             stmtSelectFactures = connection.prepareStatement(selectFacturesSQL);
             stmtSelectFactures.setInt(1, client_id);
             ResultSet rsFactures = stmtSelectFactures.executeQuery();
 
-            // Prepare SQL statements for deletions
             String deleteProduitsFactureSQL = "DELETE FROM Produits_Facture WHERE facture_id = ?";
             stmtDeleteProduitsFacture = connection.prepareStatement(deleteProduitsFactureSQL);
 
@@ -206,7 +203,6 @@ public class impClient implements iClient {
                 double chiffreDAffaires = resultSet.getDouble("chiffre_d_affaires");
                 String categorie = resultSet.getString("categorie_client");
 
-                // Assuming you have a Client constructor that accepts these parameters
                 Client client = new Client(id, name, chiffreDAffaires, categorie);
                 clients.add(client);
             }

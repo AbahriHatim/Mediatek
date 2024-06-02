@@ -290,9 +290,8 @@ public class ProductSelectionController {
         };
         editColumn.setCellFactory(editCellFactory);
 
-        // Action column
         TableColumn<ProduitFacture, Void> actionColumn = new TableColumn<>("Action");
-        actionColumn.setPrefWidth(100);
+        actionColumn.setPrefWidth(200);
         Callback<TableColumn<ProduitFacture, Void>, TableCell<ProduitFacture, Void>> actionCellFactory = new Callback<>() {
             @Override
             public TableCell<ProduitFacture, Void> call(final TableColumn<ProduitFacture, Void> param) {

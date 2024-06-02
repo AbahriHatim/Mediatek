@@ -5,12 +5,13 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.HBox?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.mediatek.Controller.FactureContoller"
             prefHeight="400.0" prefWidth="600.0">
     <VBox alignment="CENTER" spacing="10.0" AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50" AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50">
-        <TableView fx:id="factureTableView" prefHeight="200.0" styleClass="custom-table-view">
+        <TableView fx:id="factureTableView" prefWidth="550"  prefHeight="700.0" styleClass="custom-table-view">
             <columns>
                 <TableColumn text="ID" fx:id="idFactureColumn"/>
                 <TableColumn text="Client ID" fx:id="ClientIdColumn"/>
@@ -18,7 +19,9 @@
                 <TableColumn text="Actions" fx:id="actionsColumn"/>
             </columns>
         </TableView>
+        <HBox spacing="10.0" alignment="CENTER">
         <Button text="Ajouter Facture" styleClass="add-button" onAction="#handleAddFactureClick"/>
         <Button text="Load" styleClass="add-button" onAction="#onLoadFacturesButtonClick"/>
+        </HBox>
     </VBox>
 </AnchorPane>
