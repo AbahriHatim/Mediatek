@@ -27,10 +27,13 @@
          </HBox>
       </VBox>
       <!-- Vues incluses -->
-      <AnchorPane fx:id="contentPane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="150" AnchorPane.rightAnchor="0">
+      <AnchorPane fx:id="contentPane"   AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="150" AnchorPane.rightAnchor="0">
          <fx:include source="facture.fxml" fx:id="factureView" visible="false"/>
          <fx:include source="produit.fxml" fx:id="produitView" visible="false"/>
          <fx:include source="Client.fxml" fx:id="ClientView" visible="false"/>
+         <!-- Ajouter cette inclusion pour la vue du tableau de bord -->
+         <fx:include source="dashboard-view.fxml" fx:id="dashboardView" visible="false"/>
+
       </AnchorPane>
    </HBox>
 </AnchorPane>
