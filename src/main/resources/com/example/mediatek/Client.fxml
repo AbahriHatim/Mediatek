@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 
+<?import javafx.scene.layout.HBox?>
 <VBox alignment="CENTER" spacing="10.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.ClientController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
@@ -16,8 +17,11 @@
     <Label fx:id="welcomeText" text="Welcome to Client Management"/>
     <Label layoutX="20" layoutY="290" text="Search:"/>
     <TextField fx:id="searchField" layoutX="120" layoutY="290"/>
-    <Button text="Search" layoutX="250" layoutY="290" onAction="#handleSearchButtonClick"/>
-    <Button text="Load" layoutX="520" layoutY="290" onAction="#loadClientData"/>
+    <HBox spacing="10.0" alignment="CENTER">
+        <Button text="Search" onAction="#handleSearchButtonClick"/>
+        <Button text="Load" onAction="#loadClientData"/>
+        <Button text="View Categorized" onAction="#handleViewCategorizedButtonClick"/>
+    </HBox>
 
     <TableView fx:id="clientTableView" prefWidth="500.0" prefHeight="300.0">
         <columns>
@@ -37,7 +41,8 @@
         <TextField fx:id="telephoneField" promptText="Telephone"/>
         <Button fx:id="addButton" text="Add Client" onAction="#onAddClientButtonClick"/>
     </VBox>
-
+    <HBox spacing="10.0" alignment="CENTER">
     <Button fx:id="editButton" text="Edit Client" onAction="#onEditClientButtonClick" visible="false"/>
     <Button fx:id="deleteButton" text="Delete Client" onAction="#onDeleteClientButtonClick" visible="false"/>
+    </HBox>
 </VBox>

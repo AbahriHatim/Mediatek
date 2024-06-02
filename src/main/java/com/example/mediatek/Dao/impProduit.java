@@ -3,15 +3,14 @@ package com.example.mediatek.Dao;
 import com.example.mediatek.Client;
 import com.example.mediatek.DataBaseConnection;
 import com.example.mediatek.Produit;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import java.sql.*;
+import oracle.jdbc.OracleTypes;
 public class impProduit implements iProduit {
     private Connection connection;
     public impProduit() {
@@ -255,6 +254,7 @@ public class impProduit implements iProduit {
 
         return filteredProduit;
     }
+
     public Produit getProduitById(int produitId) throws DAOException {
         Produit produit = null;
         String sql = "SELECT nom, prix_unitaire FROM PRODUITS WHERE produit_id = ?";
@@ -275,8 +275,25 @@ public class impProduit implements iProduit {
         }
         return produit;
     }
+    public static double getDiscountedPrice(int productId, double discountPercentage) throws SQLException {
+        double discountedPrice = 0.0;
+        String sql = "{? = call get_discounted_price(?, ?)}";
+        try (Connection connection = DataBaseConnection.getConnection();
+             CallableStatement statement = connection.prepareCall(sql)) {
+            statement.registerOutParameter(1, OracleTypes.NUMBER);
+            statement.setInt(2, productId);
+            statement.setDouble(3, discountPercentage);
+            statement.execute();
+            discountedPrice = statement.getDouble(1);
+        }
+        return discountedPrice;
+    }
+
 
 }
+
+
+
 
 
 

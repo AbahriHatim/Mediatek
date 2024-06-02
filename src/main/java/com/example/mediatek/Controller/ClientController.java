@@ -7,10 +7,16 @@ import com.example.mediatek.Produit;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -129,8 +135,13 @@ public class ClientController implements Initializable {
             selectedClient.setNom(nameField.getText());
             selectedClient.setAdresse(addressField.getText());
             selectedClient.setEmail(emailField.getText());
-            selectedClient.setTelephone(Double.parseDouble(telephoneField.getText()));
+            try {
+                selectedClient.setTelephone(Double.parseDouble(telephoneField.getText()));
 
+            } catch (NumberFormatException e) {
+                showAlert(Alert.AlertType.ERROR, "Téléphone invalide", "Veuillez entrer un numéro de téléphone valide (un nombre).");
+                return;
+            }
             try {
                 clientDao.edite(selectedClient);
                 loadClientData();  // Reload data
@@ -202,6 +213,32 @@ public class ClientController implements Initializable {
             }
         } else {
             showAlert("Warning", "No client selected for deletion.", Alert.AlertType.WARNING);
+        }
+    }
+    ViewController controller;
+    @FXML
+    private <ViewController> void handleViewCategorizedButtonClick() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/mediatek/viewCate.fxml"));
+            Parent root = fxmlLoader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Categorized Clients");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL); // Block input events to other windows
+
+            // Optionally pass data to the new controller if needed
+             controller = fxmlLoader.getController();
+            try {
+                controller.loadCategorizedData();
+            } catch (DAOException e) {
+                e.printStackTrace();
+            }
+
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            showAlert("Error", "Failed to open categorized view: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 

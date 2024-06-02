@@ -12,6 +12,7 @@ module com.example.mediatek {
     requires java.sql;
     requires org.apache.pdfbox;
     requires java.desktop;
+    requires ojdbc10;
 
 
     opens com.example.mediatek to javafx.fxml;

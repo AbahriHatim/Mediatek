@@ -1,86 +1,57 @@
 package com.example.mediatek.Controller;
 
 import com.example.mediatek.Client;
-import com.example.mediatek.Dao.impView;
-import com.example.mediatek.View;
+import com.example.mediatek.Dao.DAOException;
+import com.example.mediatek.Dao.impClient;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.util.List;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class ViewController {
-    @FXML
-    private TableView<Client> clientTableView;
-    @FXML
-    private TableView<View> viewTableView;
+public class ViewController implements Initializable {
 
     @FXML
-    private TableColumn<Client, Integer> idClientColumn;
-    @FXML
-    private TableColumn<Client, String> nameClientColumn;
-    @FXML
-    private TableColumn<Client, String> addressColumn;
-    @FXML
-    private TableColumn<Client, String> emailColumn;
-    @FXML
-    private TableColumn<Client, String> telephoneColumn;
+    private TableView<Client> categorizedClientTableView;
 
     @FXML
-    private TableColumn<View, Integer> codeClientColumn;
+    private TableColumn<Client, Integer> idColumn;
     @FXML
-    private TableColumn<View, String> nomClientColumn;
+    private TableColumn<Client, String> nameColumn;
     @FXML
-    private TableColumn<View, Double> chiffreAffairesColumn;
+    private TableColumn<Client, Double> chiffreAffairesColumn;
     @FXML
-    private TableColumn<View, String> categorieClientColumn;
+    private TableColumn<Client, String> categorieColumn;
 
-    @FXML
-    private TextField nameClientField;
+    private impClient clientDao = new impClient(); // Instantiate your DAO
 
-    private impView dao;
-
-    @FXML
-    public void initialize() {
-        dao = new impView();
-
-        initializeClientTable();
-        initializeViewTable();
-
-        loadClients();
-    }
-
-    private void initializeClientTable() {
-        idClientColumn.setCellValueFactory(new PropertyValueFactory<>("client_id"));
-        nameClientColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        addressColumn.setCellValueFactory(new PropertyValueFactory<>("adresse"));
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        telephoneColumn.setCellValueFactory(new PropertyValueFactory<>("telephone"));
-
-        clientTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                loadView(newSelection.getClient_id());
-            }
-        });
-    }
-
-    private void initializeViewTable() {
-        codeClientColumn.setCellValueFactory(new PropertyValueFactory<>("codeClient"));
-        nomClientColumn.setCellValueFactory(new PropertyValueFactory<>("nomClient"));
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Initialize the table columns
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("client_id"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
         chiffreAffairesColumn.setCellValueFactory(new PropertyValueFactory<>("chiffreDAffaires"));
-        categorieClientColumn.setCellValueFactory(new PropertyValueFactory<>("categorieClient"));
+        categorieColumn.setCellValueFactory(new PropertyValueFactory<>("categorie"));
+
+        // Load the categorized client data
+        try {
+            loadCategorizedData();
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
     }
-
-
-    private void loadClients() {
-        List<Client> clients = dao.listerClient();
-        clientTableView.getItems().setAll(clients);
-    }
-
-    private void loadView(int clientId) {
-        List<View> views = dao.listerView(clientId);
-        viewTableView.getItems().setAll(views);
+    @FXML
+    public void loadCategorizedData() throws DAOException {
+        try {
+            ObservableList<Client> categorizedClientList = FXCollections.observableArrayList(clientDao.getClientDetailsFromView());
+            categorizedClientTableView.setItems(categorizedClientList);
+        } catch (DAOException e) {
+            throw new DAOException("Error retrieving client details from view", e);
+        }
     }
 }

@@ -104,6 +104,9 @@ public class ProduitController implements Initializable {
                 editButton.setVisible(true);
                 deleteButton.setVisible(true);
                 addButton.setVisible(false);
+                viewStockAuditButton.setVisible(false);
+                viewAllDemandesButton.setVisible(false);
+
                 displayDemande(newSelection.getProduit_id());
 
             } else {
@@ -112,6 +115,9 @@ public class ProduitController implements Initializable {
                 addButton.setVisible(true);
                 editButton.setVisible(false);
                 deleteButton.setVisible(false);
+                viewStockAuditButton.setVisible(true);
+                viewAllDemandesButton.setVisible(true);
+
 
 
             }
@@ -232,9 +238,20 @@ public class ProduitController implements Initializable {
         if (selectedClient != null) {
             selectedClient.setNom(nameField.getText());
             selectedClient.setDescription(descriptionField.getText());
-            selectedClient.setPrix_unitaire(Double.parseDouble(prix_unitaireField.getText()));
+
+            try {
+                selectedClient.setPrix_unitaire(Double.parseDouble(prix_unitaireField.getText()));
+            } catch (NumberFormatException e) {
+                showAlert(Alert.AlertType.ERROR, "Prix unitaire invalide", "Veuillez entrer un prix unitaire valide (un nombre).");
+                return;
+            }
+            try {
             selectedClient.setQuantite_en_stock(Integer.parseInt(quantite_en_stockField.getText()));
 
+            } catch (NumberFormatException e) {
+                showAlert(Alert.AlertType.ERROR, "Quantité en stock invalide", "Veuillez entrer une quantité valide (un nombre).");
+                return;
+            }
             try {
                 produitDao.edite(selectedClient);
                 loadProductData();  // Reload data

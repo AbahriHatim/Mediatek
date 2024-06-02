@@ -1,14 +1,21 @@
 package com.example.mediatek;
 
-import java.sql.Date;
-
 public class Produit {
     private int produit_id;
     private String nom;
     private String description;
     private double prix_unitaire;
     private int quantite_en_stock;
+    private double promo_price;
 
+    public Produit(int produit_id, String nom, String description, double prix_unitaire, int quantite_en_stock, double promo_price) {
+        this.produit_id = produit_id;
+        this.nom = nom;
+        this.description = description;
+        this.prix_unitaire = prix_unitaire;
+        this.quantite_en_stock = quantite_en_stock;
+        this.promo_price = promo_price;
+    }
     public Produit(int produit_id, String nom, String description, double prix_unitaire, int quantite_en_stock) {
         this.produit_id = produit_id;
         this.nom = nom;
@@ -24,6 +31,14 @@ public class Produit {
 
     public void setProduit_id(int produit_id) {
         this.produit_id = produit_id;
+    }
+
+    public double getPromo_price() {
+        return promo_price;
+    }
+
+    public void setPromo_price(double promo_price) {
+        this.promo_price = promo_price;
     }
 
     public String getNom() {

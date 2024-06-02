@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 
+<?import javafx.scene.layout.HBox?>
 <VBox alignment="CENTER" spacing="10.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.ProduitController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
@@ -17,9 +18,10 @@
 
     <Label layoutX="20" layoutY="290" text="Search:"/>
     <TextField fx:id="searchField" layoutX="120" layoutY="290"/>
+    <HBox spacing="10.0" alignment="CENTER">
     <Button text="Search" layoutX="250" layoutY="290" onAction="#handleSearchButtonClick"/>
     <Button text="Load" layoutX="520" layoutY="290" onAction="#loadProductData"/>
-
+    </HBox>
     <TableView fx:id="clientTableView" prefHeight="200">
         <columns>
             <TableColumn text="ID" fx:id="idColumn"/>
@@ -39,10 +41,14 @@
         <Button fx:id="addButton" text="Add Produit" onAction="#onAddClientButtonClick"/>
     </VBox>
 
-
+    <HBox spacing="10.0" alignment="CENTER">
     <Button fx:id="editButton" text="Edit Produit" onAction="#onEditClientButtonClick" visible="false"/>
     <Button fx:id="deleteButton" text="Delete Produit" onAction="#onDeleteClientButtonClick" visible="false"/>
+    </HBox>
 
+
+    <HBox spacing="10.0"  alignment="CENTER">
     <Button fx:id="viewStockAuditButton" text="View Stock Audit" onAction="#onViewStockAuditButtonClick"/>
     <Button fx:id="viewAllDemandesButton" text="View All Demandes" onAction="#onViewAllDemandesButtonClick"/>
+    </HBox>
 </VBox>

@@ -54,12 +54,6 @@ public class ProductSelectionController {
 
     @FXML
     private TableColumn<ProduitFacture, String> addedProductNameColumn;
-    @FXML
-    private TableColumn<ProduitFacture,String> addeddescColumn;
-
-    @FXML
-    private TableColumn<ProduitFacture, Double> addedProductPriceColumn;
-
 
     @FXML
     private TableColumn<ProduitFacture, Integer> addedQuantityColumn;
@@ -191,7 +185,6 @@ public class ProductSelectionController {
             for (ProduitFacture pf : addedProducts) {
                 produitDAO.addProduitsFacture(pf.getFacture_id(), pf.getProduit_id(), pf.getQuantite());
             }
-            String logoPath = "C:/Users/surface/Downloads/logo.png";
 
             // Retrieve client information by client_id
             Client client = impFacture.getClientById(selectedClient.getClient_id());
@@ -258,10 +251,9 @@ public class ProductSelectionController {
         addedProductIdColumn.setCellValueFactory(new PropertyValueFactory<>("produit_id"));
         addedQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantite"));
 
-
         // Edit column
         TableColumn<ProduitFacture, Void> editColumn = new TableColumn<>("Edit");
-        editColumn.setPrefWidth(80);
+        editColumn.setPrefWidth(50);
         Callback<TableColumn<ProduitFacture, Void>, TableCell<ProduitFacture, Void>> editCellFactory = new Callback<>() {
             @Override
             public TableCell<ProduitFacture, Void> call(final TableColumn<ProduitFacture, Void> param) {
@@ -324,9 +316,6 @@ public class ProductSelectionController {
 
         addedProductsTableView.getColumns().addAll(editColumn, actionColumn);
     }
-
-
-
 
 
     private void openEditQuantityDialog(ProduitFacture produitFacture) {

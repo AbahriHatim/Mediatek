@@ -178,6 +178,7 @@ public int createFacture(int clientId, Date invoiceDate) throws SQLException {
             invoiceStatement.close();
         }
     }
+
 }
 
     public void addProduitsFacture(int factureId, int produitId, int quantite) throws SQLException {

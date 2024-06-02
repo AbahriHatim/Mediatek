@@ -6,6 +6,8 @@ public class Client {
     private String adresse;
     private String email;
     private Double telephone;
+    private double chiffreDAffaires;
+    private String categorie;
 
     public Client(int client_id, String nom, String adresse, String email, Double telephone) {
         this.client_id = client_id;
@@ -14,7 +16,12 @@ public class Client {
         this.email = email;
         this.telephone = telephone;
     }
-
+    public Client(int client_id, String nom, double chiffreDAffaires, String categorie) {
+        this.client_id = client_id;
+        this.nom = nom;
+        this.chiffreDAffaires = chiffreDAffaires;
+        this.categorie = categorie;
+    }
     // Getters and setters
     public int getClient_id() {
         return client_id;
@@ -22,6 +29,12 @@ public class Client {
 
     public void setClient_id(int client_id) {
         this.client_id = client_id;
+    }
+    public double getChiffreDAffaires() {
+        return chiffreDAffaires;
+    }
+    public String getAdresse() {
+        return adresse;
     }
 
     public String getNom() {
@@ -32,8 +45,8 @@ public class Client {
         this.nom = nom;
     }
 
-    public String getAdresse() {
-        return adresse;
+    public String getCategorie() {
+        return categorie;
     }
 
     public void setAdresse(String adresse) {

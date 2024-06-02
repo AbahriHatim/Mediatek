@@ -193,5 +193,27 @@ public class impClient implements iClient {
 
         return filteredClients;
     }
+    public List<Client> getClientDetailsFromView() throws DAOException {
+        String query = "SELECT * FROM v_chiffre_affaire";
+        List<Client> clients = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("code_client");
+                String name = resultSet.getString("nom_client");
+                double chiffreDAffaires = resultSet.getDouble("chiffre_d_affaires");
+                String categorie = resultSet.getString("categorie_client");
+
+                // Assuming you have a Client constructor that accepts these parameters
+                Client client = new Client(id, name, chiffreDAffaires, categorie);
+                clients.add(client);
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Error retrieving client details from view", e);
+        }
+        return clients;
+    }
 
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="10.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.ViewController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <Label text="Categorized Clients"/>
+
+    <TableView fx:id="categorizedClientTableView" prefWidth="500.0" prefHeight="300.0">
+        <columns>
+            <TableColumn text="ID" fx:id="idColumn"/>
+            <TableColumn text="Name" fx:id="nameColumn"/>
+            <TableColumn text="Chiffre d'Affaires" fx:id="chiffreAffairesColumn"/>
+            <TableColumn text="Category" fx:id="categorieColumn"/>
+        </columns>
+    </TableView>
+</VBox>
