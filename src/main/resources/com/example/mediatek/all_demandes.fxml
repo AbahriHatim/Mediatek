@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.AllDemandesController" spacing="10.0">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+    <Label text="All Demandes"/>
+    <TableView fx:id="demandesTableView">
+        <columns>
+            <TableColumn fx:id="produitIdColumn" text="Produit ID"/>
+            <TableColumn fx:id="produitNameColumn" text="Produit Nom"/>
+            <TableColumn fx:id="demandeColumn" text="Demande"/>
+        </columns>
+    </TableView>
+</VBox>

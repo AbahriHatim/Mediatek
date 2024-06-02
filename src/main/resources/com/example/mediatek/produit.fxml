@@ -29,7 +29,7 @@
             <TableColumn text="Quantite en Stock" fx:id="quantite_en_stockColumn"/>
         </columns>
     </TableView>
-
+    <Label fx:id="demandeLabel" text="Demande: "/>
     <VBox spacing="5.0">
         <Label text="Add/Edit Produit"/>
         <TextField fx:id="nameField" promptText="Name"/>
@@ -39,8 +39,10 @@
         <Button fx:id="addButton" text="Add Produit" onAction="#onAddClientButtonClick"/>
     </VBox>
 
+
     <Button fx:id="editButton" text="Edit Produit" onAction="#onEditClientButtonClick" visible="false"/>
     <Button fx:id="deleteButton" text="Delete Produit" onAction="#onDeleteClientButtonClick" visible="false"/>
 
     <Button fx:id="viewStockAuditButton" text="View Stock Audit" onAction="#onViewStockAuditButtonClick"/>
+    <Button fx:id="viewAllDemandesButton" text="View All Demandes" onAction="#onViewAllDemandesButtonClick"/>
 </VBox>

@@ -3,6 +3,7 @@ package com.example.mediatek.Controller;
 import com.example.mediatek.Client;
 import com.example.mediatek.Dao.DAOException;
 import com.example.mediatek.Dao.impProduit;
+import com.example.mediatek.DataBaseConnection;
 import com.example.mediatek.Produit;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +17,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -48,6 +53,8 @@ public class ProduitController implements Initializable {
     private TextField prix_unitaireField;
     @FXML
     private TextField quantite_en_stockField;
+    @FXML
+    private Label demandeLabel;
 
     @FXML
     private Button addButton;
@@ -57,6 +64,8 @@ public class ProduitController implements Initializable {
     private Button deleteButton;
     @FXML
     private Button viewStockAuditButton;
+    @FXML
+    private Button viewAllDemandesButton;
     @FXML
     private void onViewStockAuditButtonClick() {
         try {
@@ -95,16 +104,62 @@ public class ProduitController implements Initializable {
                 editButton.setVisible(true);
                 deleteButton.setVisible(true);
                 addButton.setVisible(false);
+                displayDemande(newSelection.getProduit_id());
+
             } else {
                 // Reset to default state when no product is selected
                 resetFields();
                 addButton.setVisible(true);
                 editButton.setVisible(false);
                 deleteButton.setVisible(false);
+
+
             }
         });
     }
-@FXML
+    private void displayDemande(int productId) {
+        Connection connection = null;
+        CallableStatement callableStatement = null;
+        try {
+            connection = DataBaseConnection.getConnection();
+            String sql = "{ ? = call FonctionDeterminerDemande(?) }";
+            callableStatement = connection.prepareCall(sql);
+            callableStatement.registerOutParameter(1, Types.VARCHAR);
+            callableStatement.setInt(2, productId);
+            callableStatement.execute();
+            String demande = callableStatement.getString(1);
+            demandeLabel.setText("Demande: " + demande);
+        } catch (SQLException e) {
+            showAlert("Error", "Unable to fetch demande: " + e.getMessage(), Alert.AlertType.ERROR);
+        } finally {
+            try {
+                if (callableStatement != null) callableStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                showAlert("Error", "Error closing resources: " + e.getMessage(), Alert.AlertType.ERROR);
+            }
+        }
+    }
+    @FXML
+    private void onViewAllDemandesButtonClick() {
+        try {
+            System.out.println("Loading FXML...");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/mediatek/all_demandes.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("All Demandes");
+            stage.setScene(scene);
+            System.out.println("Showing stage...");
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Error", "Unable to load all demandes view: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
+    }
+
+
+
+    @FXML
     private void loadProductData() {
         try {
             ObservableList<Produit> produitList = FXCollections.observableArrayList(produitDao.lister());
@@ -236,6 +291,7 @@ public class ProduitController implements Initializable {
         descriptionField.setText("");
         prix_unitaireField.setText("");
         quantite_en_stockField.setText("");
+        demandeLabel.setText("Demande: ");
     }
 
     // Helper method to show alerts
