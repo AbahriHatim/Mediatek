@@ -20,7 +20,6 @@
     <Button text="Search" layoutX="250" layoutY="290" onAction="#handleSearchButtonClick"/>
     <Button text="Load" layoutX="520" layoutY="290" onAction="#loadProductData"/>
 
-
     <TableView fx:id="clientTableView" prefHeight="200">
         <columns>
             <TableColumn text="ID" fx:id="idColumn"/>
@@ -42,4 +41,6 @@
 
     <Button fx:id="editButton" text="Edit Produit" onAction="#onEditClientButtonClick" visible="false"/>
     <Button fx:id="deleteButton" text="Delete Produit" onAction="#onDeleteClientButtonClick" visible="false"/>
+
+    <Button fx:id="viewStockAuditButton" text="View Stock Audit" onAction="#onViewStockAuditButtonClick"/>
 </VBox>

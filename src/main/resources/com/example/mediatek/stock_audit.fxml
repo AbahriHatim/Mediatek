@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.StockAuditController">
+    <TableView fx:id="stockAuditTableView">
+        <columns>
+            <TableColumn text="Audit ID" fx:id="auditIdColumn"/>
+            <TableColumn text="Date Audit" fx:id="dateAuditColumn"/>
+            <TableColumn text="Produit ID" fx:id="produitIdColumn"/>
+            <TableColumn text="Stock Restant" fx:id="stockRestantColumn"/>
+        </columns>
+    </TableView>
+</VBox>

@@ -7,10 +7,14 @@ import com.example.mediatek.Produit;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -51,6 +55,21 @@ public class ProduitController implements Initializable {
     private Button editButton;
     @FXML
     private Button deleteButton;
+    @FXML
+    private Button viewStockAuditButton;
+    @FXML
+    private void onViewStockAuditButtonClick() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/mediatek/stock_audit.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Stock Audit");
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Error", "Unable to load stock audit view: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
