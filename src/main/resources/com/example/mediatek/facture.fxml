@@ -15,8 +15,10 @@
                 <TableColumn text="ID" fx:id="idFactureColumn"/>
                 <TableColumn text="Client ID" fx:id="ClientIdColumn"/>
                 <TableColumn text="Date" fx:id="dateFactureColumn"/>
+                <TableColumn text="Actions" fx:id="actionsColumn"/>
             </columns>
         </TableView>
         <Button text="Ajouter Facture" styleClass="add-button" onAction="#handleAddFactureClick"/>
+        <Button text="Load" styleClass="add-button" onAction="#onLoadFacturesButtonClick"/>
     </VBox>
 </AnchorPane>

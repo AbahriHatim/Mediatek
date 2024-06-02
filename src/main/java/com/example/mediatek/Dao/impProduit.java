@@ -9,12 +9,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class impProduit implements iProduit {
     private Connection connection;
     public impProduit() {
         connection = DataBaseConnection.getConnection();
     }
+    private static final Logger logger = Logger.getLogger(impProduit.class.getName());
+
 
     @Override
     public List<Produit> lister() throws DAOException {
@@ -123,7 +127,7 @@ public class impProduit implements iProduit {
             if (connection != null) {
                 connection.setAutoCommit(false); // Start transaction
 
-                // Delete from Produits_Facture
+                // Delete from Produits_Facture if the product is associated with any facture
                 String deleteFromProduitsFactureSql = "DELETE FROM Produits_Facture WHERE produit_id = ?";
                 statement = connection.prepareStatement(deleteFromProduitsFactureSql);
                 statement.setInt(1, produitId);
@@ -136,6 +140,14 @@ public class impProduit implements iProduit {
 
                 while (orphanedFactures.next()) {
                     int orphanedFactureId = orphanedFactures.getInt("facture_id");
+
+                    // Delete from facture_pdf
+                    String deleteFromFacturePdfSql = "DELETE FROM facture_pdfs WHERE id_facture = ?";
+                    PreparedStatement deleteFromFacturePdfStatement = connection.prepareStatement(deleteFromFacturePdfSql);
+                    deleteFromFacturePdfStatement.setInt(1, orphanedFactureId);
+                    deleteFromFacturePdfStatement.executeUpdate();
+
+                    // Delete from Factures
                     String deleteOrphanedFactureSql = "DELETE FROM Factures WHERE facture_id = ?";
                     PreparedStatement deleteOrphanedStatement = connection.prepareStatement(deleteOrphanedFactureSql);
                     deleteOrphanedStatement.setInt(1, orphanedFactureId);
@@ -146,7 +158,10 @@ public class impProduit implements iProduit {
                 String deleteFromProduitsSql = "DELETE FROM PRODUITS WHERE produit_id = ?";
                 statement = connection.prepareStatement(deleteFromProduitsSql);
                 statement.setInt(1, produitId);
-                statement.executeUpdate();
+                int rowsAffected = statement.executeUpdate();
+                if (rowsAffected == 0) {
+                    throw new DAOException("Product not found with id: " + produitId);
+                }
 
                 connection.commit(); // Commit transaction
             } else {

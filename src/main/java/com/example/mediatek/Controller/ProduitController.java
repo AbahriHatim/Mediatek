@@ -202,7 +202,7 @@ public class ProduitController implements Initializable {
                     editButton.setVisible(false);
                     deleteButton.setVisible(false);
                 } catch (DAOException e) {
-                    showAlert("Error", "Unable to delete product: " + e.getMessage(), Alert.AlertType.ERROR);
+                    showAlert("Error", "Unable to delete product: " + e.getMessage() + "\nCause: " + e.getCause(), Alert.AlertType.ERROR);
                 }
             } else {
                 showAlert("Info", "Product deletion canceled.", Alert.AlertType.INFORMATION);

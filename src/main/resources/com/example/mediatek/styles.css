@@ -127,7 +127,9 @@
 
 
 /* Styles pour la barre de navigation */
+/* styles.css */
 
+/* Styles pour la barre de navigation */
 .navigation-bar {
     -fx-background-color: #2C3E50;
     -fx-padding: 10;
@@ -135,39 +137,24 @@
 }
 
 /* Styles pour les éléments de la barre de navigation */
+.navigation-item {
+    -fx-alignment: center-left;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+}
+
 .navigation-label {
     -fx-text-fill: white;
-    -fx-cursor: pointer;
+    -fx-font-size: 14px;
 }
 
-/* Styles pour les carrés d'information */
-.info-card {
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
-    -fx-hgrow: always;
-    -fx-min-width: 200px; /* Largeur fixe */
-    -fx-min-height: 200px; /* Hauteur fixe */
+.navigation-item:hover {
+    -fx-background-color: #34495e;
 }
 
-/* Styles de couleur pour les carrés d'information */
-.info-card-red {
-    -fx-background-color: #E74C3C; /* Rouge */
-}
-
-.info-card-blue {
-    -fx-background-color: #3498DB; /* Bleu */
-}
-
-.info-card-green {
-    -fx-background-color: #2ECC71; /* Vert */
-}
-
-/* Styles pour les étiquettes dans les carrés d'information */
-.info-label {
+.icon {
+    -fx-font-family: 'FontAwesome';
+    -fx-font-size: 20px;
+    -fx-padding-right: 10px;
     -fx-text-fill: white;
-}
-
-.info-value {
-    -fx-text-fill: white;
-    -fx-font-size: 24px;
 }

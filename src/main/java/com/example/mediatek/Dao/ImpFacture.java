@@ -2,6 +2,7 @@ package com.example.mediatek.Dao;
 
 import com.example.mediatek.*;
 
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -313,6 +314,33 @@ public int createFacture(int clientId, Date invoiceDate) throws SQLException {
             }
         }
         return invoices;
+    }
+    public File getFacturePDF(int factureId) throws SQLException, IOException {
+        String query = "SELECT pdf_file_data, pdf_file_name FROM Facture_PDFs WHERE id_facture = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, factureId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Blob pdfBlob = rs.getBlob("pdf_file_data");
+                String pdfFileName = rs.getString("pdf_file_name");
+
+                InputStream inputStream = pdfBlob.getBinaryStream();
+                File tempFile = File.createTempFile(pdfFileName, ".pdf");
+
+                try (OutputStream outputStream = new FileOutputStream(tempFile)) {
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                }
+
+                return tempFile;
+            } else {
+                return null;
+            }
+        }
     }
 
 }

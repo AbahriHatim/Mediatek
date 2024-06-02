@@ -38,6 +38,11 @@ public class AddFactureController {
 
     @FXML
     private TableColumn<Client, String> telephoneColumn;
+    private FactureContoller factureController; // Reference to FactureController
+
+    public void setFactureController(FactureContoller factureController) {
+        this.factureController = factureController;
+    }
 
     @FXML
     private Button nextButton;

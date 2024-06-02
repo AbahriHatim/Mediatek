@@ -5,14 +5,26 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.DashboardController" stylesheets="@styles.css" prefWidth="1000" prefHeight="600">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.mediatek.Controller.DashboardController" stylesheets="@styles.css" prefWidth="1000" prefHeight="500">
    <HBox spacing="10" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
       <!-- Barre de navigation -->
       <VBox styleClass="navigation-bar" prefWidth="150">
-         <Label text="Dashboard" styleClass="navigation-label" onMouseClicked="#handleDashboardClick"/>
-         <Label text="Client" styleClass="navigation-label" onMouseClicked="#handleClientClick"/>
-         <Label text="Produit" styleClass="navigation-label" onMouseClicked="#handleProduitClick"/>
-         <Label text="Facture" styleClass="navigation-label" onMouseClicked="#handleFactureClick"/>
+         <HBox spacing="10" onMouseClicked="#handleDashboardClick" styleClass="navigation-item">
+            <Label text="" styleClass="fas fa-tachometer-alt icon"/>
+            <Label text="Dashboard" styleClass="navigation-label"/>
+         </HBox>
+         <HBox spacing="10" onMouseClicked="#handleClientClick" styleClass="navigation-item">
+            <Label text="" styleClass="fas fa-user icon"/>
+            <Label text="Client" styleClass="navigation-label"/>
+         </HBox>
+         <HBox spacing="10" onMouseClicked="#handleProduitClick" styleClass="navigation-item">
+            <Label text="" styleClass="fas fa-box icon"/>
+            <Label text="Produit" styleClass="navigation-label"/>
+         </HBox>
+         <HBox spacing="10" onMouseClicked="#handleFactureClick" styleClass="navigation-item">
+            <Label text="" styleClass="fas fa-file-invoice icon"/>
+            <Label text="Facture" styleClass="navigation-label"/>
+         </HBox>
       </VBox>
       <!-- Vues incluses -->
       <AnchorPane fx:id="contentPane" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="150" AnchorPane.rightAnchor="0">

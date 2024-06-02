@@ -21,7 +21,7 @@
     <Button text="Load" layoutX="520" layoutY="290" onAction="#loadProductData"/>
 
 
-    <TableView fx:id="clientTableView">
+    <TableView fx:id="clientTableView" prefHeight="200">
         <columns>
             <TableColumn text="ID" fx:id="idColumn"/>
             <TableColumn text="Name" fx:id="nameColumn"/>

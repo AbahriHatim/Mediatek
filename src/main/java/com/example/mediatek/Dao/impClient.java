@@ -83,24 +83,37 @@ public class impClient implements iClient {
     public void supprimer(int client_id) throws DAOException {
         PreparedStatement stmtSelectFactures = null;
         PreparedStatement stmtDeleteProduitsFacture = null;
+        PreparedStatement stmtDeleteFacturePdf = null;
         PreparedStatement stmtDeleteFactures = null;
         PreparedStatement stmtDeleteClient = null;
 
         try {
+            // Begin transaction
+            connection.setAutoCommit(false);
+
             // Select all facture_ids related to the client
             String selectFacturesSQL = "SELECT facture_id FROM Factures WHERE client_id = ?";
             stmtSelectFactures = connection.prepareStatement(selectFacturesSQL);
             stmtSelectFactures.setInt(1, client_id);
             ResultSet rsFactures = stmtSelectFactures.executeQuery();
 
-            // Delete related records in Produits_Facture for each facture
+            // Prepare SQL statements for deletions
             String deleteProduitsFactureSQL = "DELETE FROM Produits_Facture WHERE facture_id = ?";
             stmtDeleteProduitsFacture = connection.prepareStatement(deleteProduitsFactureSQL);
 
+            String deleteFacturePdfSQL = "DELETE FROM facture_pdfs WHERE id_facture = ?";
+            stmtDeleteFacturePdf = connection.prepareStatement(deleteFacturePdfSQL);
+
             while (rsFactures.next()) {
                 int facture_id = rsFactures.getInt("facture_id");
+
+                // Delete related records in Produits_Facture
                 stmtDeleteProduitsFacture.setInt(1, facture_id);
                 stmtDeleteProduitsFacture.executeUpdate();
+
+                // Delete related records in facture_pdf
+                stmtDeleteFacturePdf.setInt(1, facture_id);
+                stmtDeleteFacturePdf.executeUpdate();
             }
 
             // Delete related records in Factures
@@ -115,13 +128,24 @@ public class impClient implements iClient {
             stmtDeleteClient.setInt(1, client_id);
             stmtDeleteClient.executeUpdate();
 
+            // Commit transaction
+            connection.commit();
         } catch (SQLException e) {
+            // Rollback transaction on error
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    throw new DAOException("Error rolling back transaction", ex);
+                }
+            }
             throw new DAOException("Error deleting client", e);
         } finally {
             // Close all statements and result sets
             try {
                 if (stmtSelectFactures != null) stmtSelectFactures.close();
                 if (stmtDeleteProduitsFacture != null) stmtDeleteProduitsFacture.close();
+                if (stmtDeleteFacturePdf != null) stmtDeleteFacturePdf.close();
                 if (stmtDeleteFactures != null) stmtDeleteFactures.close();
                 if (stmtDeleteClient != null) stmtDeleteClient.close();
             } catch (SQLException e) {
@@ -129,6 +153,7 @@ public class impClient implements iClient {
             }
         }
     }
+
     @Override
     public List<Client> Recherche(Integer clientId, String clientNom) throws DAOException {
         List<Client> filteredClients = new ArrayList<>();

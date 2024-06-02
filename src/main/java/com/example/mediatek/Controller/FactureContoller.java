@@ -1,5 +1,6 @@
 package com.example.mediatek.Controller;
 
+import com.example.mediatek.Dao.DAOException;
 import com.example.mediatek.Facture;
 import com.example.mediatek.ProduitFacture;
 import javafx.collections.FXCollections;
@@ -7,22 +8,29 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import com.example.mediatek.Client;
 import com.example.mediatek.Dao.ImpFacture;
 import com.example.mediatek.Produit;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-
-import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import static java.lang.Integer.parseInt;
 
@@ -80,6 +88,85 @@ public class FactureContoller {
     @FXML
     private TextField FactureidField;
 
+    @FXML
+    private TableColumn<Facture, Void> actionsColumn;
+
+    private void initializeActionsColumn() {
+        actionsColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button btnView = new Button("View");
+            private final Button btnDownload = new Button("Download");
+
+            {
+                btnView.setOnAction(event -> {
+                    Facture facture = getTableView().getItems().get(getIndex());
+                    handleViewFacture(facture);
+                });
+
+                btnDownload.setOnAction(event -> {
+                    Facture facture = getTableView().getItems().get(getIndex());
+                    handleDownloadFacture(facture);
+                });
+
+                HBox hbox = new HBox(btnView, btnDownload);
+                hbox.setSpacing(10);
+                setGraphic(hbox);
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    HBox hbox = new HBox(btnView, btnDownload);
+                    hbox.setSpacing(10);
+                    setGraphic(hbox);
+                }
+            }
+        });
+    }
+
+    private void handleViewFacture(Facture facture) {
+        try {
+            File pdfFile = factureDao.getFacturePDF(facture.getFacture_id());
+
+            if (pdfFile != null && pdfFile.exists()) {
+                if (Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().open(pdfFile);
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Error", "PDF viewer is not supported on your system.");
+                }
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Error", "The requested PDF file does not exist.");
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "An error occurred while trying to view the PDF.");
+        }
+    }
+
+    private void handleDownloadFacture(Facture facture) {
+        try {
+            File pdfFile = factureDao.getFacturePDF(facture.getFacture_id());
+
+            if (pdfFile != null && pdfFile.exists()) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Save Facture PDF");
+                fileChooser.setInitialFileName("facture_" + facture.getFacture_id() + ".pdf");
+                File saveFile = fileChooser.showSaveDialog(factureTableView.getScene().getWindow());
+
+                if (saveFile != null) {
+                    Files.copy(pdfFile.toPath(), saveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    showAlert(Alert.AlertType.INFORMATION, "Success", "The PDF has been downloaded successfully.");
+                }
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Error", "The requested PDF file does not exist.");
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "An error occurred while trying to download the PDF.");
+        }
+    }
 
 
     @FXML
@@ -87,6 +174,8 @@ public class FactureContoller {
         /*initializeClientTable();
         initializeProduitTable();*/
         initializeFactureTable();
+        initializeActionsColumn();
+
 
 
 
@@ -121,31 +210,10 @@ public class FactureContoller {
 
         onLoadFacturesButtonClick();
 
-        // Ajoutez un écouteur pour sélectionner une facture dans la table
-        factureTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                // Mettez à jour les champs de saisie avec les informations de la facture sélectionnée
-                FactureidField.setText(String.valueOf(newSelection.getFacture_id()));
 
-
-            }
-        });
     }
 
-    private void initializeProduitTable() {
-        idProduitColumn.setCellValueFactory(new PropertyValueFactory<>("produit_id"));
-        nameProduitColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        prixUnitaireColumn.setCellValueFactory(new PropertyValueFactory<>("prix_unitaire"));
-        quantiteEnStockColumn.setCellValueFactory(new PropertyValueFactory<>("quantite_en_stock"));
-        onLoadProduitsButtonClick();
-        produitTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                nameProduitField.setText(newSelection.getNom());
 
-            }
-        });
-    }
 
     @FXML
     protected void onLoadClientsButtonClickClient() {
@@ -163,6 +231,10 @@ public class FactureContoller {
     protected void onLoadFacturesButtonClick() {
         ObservableList<Facture> factureList = FXCollections.observableArrayList(factureDao.listerFacture());
         factureTableView.setItems(factureList);
+    }
+    public void loadFactures() {
+        List<Facture> factures = factureDao.listerFacture();
+        factureTableView.getItems().setAll(factures);
     }
 
 
